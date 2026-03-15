@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FOCUS ZONE — Acepe Stoic Ambience</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: #070908;
+    color: #d4cfc4;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.1;
+    pointer-events: none;
+    z-index: 0;
+    animation: drift 18s ease-in-out infinite alternate;
+  }
+  .orb1 { width: 700px; height: 700px; background: #2e6645; top: -300px; right: -200px; }
+  .orb2 { width: 500px; height: 500px; background: #1a3a28; bottom: -200px; left: -150px; animation-delay: -9s; }
+
+  @keyframes drift {
+    from { transform: translate(0,0) scale(1); }
+    to   { transform: translate(30px, 40px) scale(1.08); }
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  /* TOP BAR */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .brand {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: #2d4a35;
+    text-transform: uppercase;
+  }
+
+  .lock-pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    padding: 4px 12px;
+    border-radius: 100px;
+    border: 1px solid #1a3020;
+    color: #3d7a56;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: #3d7a56;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  /* HERO */
+  .hero { text-align: center; }
+
+  .hero h1 {
+    font-size: clamp(2rem, 6vw, 3.8rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+
+  .hero h1 span { color: #3d7a56; }
+
+  .hero p {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: #2d4a35;
+    letter-spacing: 0.1em;
+    margin-top: 0.4rem;
+  }
+
+  /* PLAYER */
+  .player-card {
+    background: #0b0f0c;
+    border: 1px solid #162018;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .video-box {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    background: #060806;
+  }
+
+  .video-box iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  .play-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    border: 1px solid #1a3020;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .play-icon:hover { border-color: #3d7a56; transform: scale(1.05); }
+
+  .play-icon svg { fill: #3d7a56; width: 22px; height: 22px; margin-left: 3px; }
+
+  .placeholder-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: #2d4a35;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .now-bar {
+    padding: 0.7rem 1rem;
+    border-top: 1px solid #162018;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .np-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: #2a4030;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .np-title {
+    font-size: 12px;
+    color: #6a9a72;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* GRID */
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: #243a2a;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.6rem;
+  }
+
+  .thumb {
+    background: #0b0f0c;
+    border: 1px solid #162018;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+
+  .thumb:hover { border-color: #2d4a3e; transform: translateY(-1px); }
+  .thumb.active { border-color: #3d7a56; }
+
+  .thumb img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    display: block;
+    background: #060806;
+  }
+
+  .thumb-info { padding: 0.4rem 0.5rem; }
+
+  .thumb-title {
+    font-size: 10px;
+    color: #5a8060;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* STATES */
+  .loading-state, .error-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    line-height: 1.8;
+  }
+
+  .loading-state { color: #2d4a35; }
+  .error-state { color: #7a3a3a; }
+
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 1px solid #1a3020;
+    border-top-color: #3d7a56;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* LOAD MORE */
+  .load-more-btn {
+    display: none;
+    width: 100%;
+    padding: 0.65rem;
+    background: transparent;
+    border: 1px solid #162018;
+    border-radius: 8px;
+    color: #2d4a35;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .load-more-btn:hover { border-color: #2d4a3e; color: #4a8060; }
+
+  /* WARNING */
+  .warn {
+    background: #0a0f0b;
+    border: 1px solid #162018;
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .warn-icon {
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .warn-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: #2d4a35;
+    letter-spacing: 0.05em;
+    line-height: 1.7;
+  }
+
+  .warn-text strong { color: #3d6a48; }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<div class="app">
+
+  <div class="topbar">
+    <span class="brand">1Eye Media — Focus Zone</span>
+    <div class="lock-pill">
+      <div class="dot"></div>
+      acepe only — locked
+    </div>
+  </div>
+
+  <div class="hero">
+    <h1>Stoic <span>Ambience.</span></h1>
+    <p>// @meditations.acepe · no algorithm · no escape · just work</p>
+  </div>
+
+  <div class="player-card">
+    <div class="video-box" id="video-box">
+      <div class="placeholder" id="placeholder">
+        <div class="play-icon" onclick="playFirst()">
+          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <div class="placeholder-text">select a session below</div>
+      </div>
+    </div>
+    <div class="now-bar">
+      <span class="np-label">now playing</span>
+      <span class="np-title" id="np-title">—</span>
+    </div>
+  </div>
+
+  <div class="warn">
+    <span class="warn-icon">⚡</span>
+    <div class="warn-text">
+      <strong>channel locked to @meditations.acepe only.</strong><br>
+      no recommendations. no rabbit holes. open youtube = you lose. stay here, stay focused.
+    </div>
+  </div>
+
+  <div class="section-label">// pick a session</div>
+
+  <div class="grid" id="grid">
+    <div class="loading-state">
+      <span class="spinner"></span>fetching sessions from acepe...
+    </div>
+  </div>
+
+  <button class="load-more-btn" id="load-more-btn">load more sessions ↓</button>
+
+</div>
+
+<script>
+  const API_KEY = 'AIzaSyD-HBI657jUWLaT5O4eiFcJK7YVJku8H34';
+  const HANDLE  = 'meditations.acepe';
+
+  let channelId      = null;
+  let nextPageToken  = null;
+  let videos         = [];
+  let currentVideoId = null;
+
+  async function getChannelId() {
+    const url = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${HANDLE}&key=${API_KEY}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    if (!data.items || !data.items.length) throw new Error('Channel not found. Check handle.');
+    return data.items[0].id;
+  }
+
+  async function fetchVideos(pageToken) {
+    let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&type=video&order=date&maxResults=24&key=${API_KEY}`;
+    if (pageToken) url += `&pageToken=${pageToken}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    return data;
+  }
+
+  function embed(videoId, title) {
+    currentVideoId = videoId;
+    const box = document.getElementById('video-box');
+    box.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    document.getElementById('np-title').textContent = title;
+    document.querySelectorAll('.thumb').forEach(t =>
+      t.classList.toggle('active', t.dataset.id === videoId)
+    );
+  }
+
+  function renderCards(items) {
+    const grid = document.getElementById('grid');
+    const loading = grid.querySelector('.loading-state');
+    if (loading) loading.remove();
+
+    items.forEach(item => {
+      const id    = item.id.videoId;
+      const title = item.snippet.title;
+      const img   = item.snippet.thumbnails.medium?.url || item.snippet.thumbnails.default?.url || '';
+      const card  = document.createElement('div');
+      card.className = 'thumb';
+      card.dataset.id = id;
+      if (id === currentVideoId) card.classList.add('active');
+      card.innerHTML = `
+        <img src="${img}" alt="" loading="lazy">
+        <div class="thumb-info">
+          <div class="thumb-title">${title}</div>
+        </div>
+      `;
+      card.addEventListener('click', () => embed(id, title));
+      grid.appendChild(card);
+    });
+  }
+
+  function playFirst() {
+    if (videos.length > 0) {
+      embed(videos[0].id.videoId, videos[0].snippet.title);
+    }
+  }
+
+  async function init() {
+    try {
+      channelId = await getChannelId();
+      const data = await fetchVideos(null);
+      videos = data.items || [];
+      nextPageToken = data.nextPageToken || null;
+
+      renderCards(videos);
+
+      if (videos.length > 0) {
+        embed(videos[0].id.videoId, videos[0].snippet.title);
+      }
+
+      const btn = document.getElementById('load-more-btn');
+      if (nextPageToken) btn.style.display = 'block';
+
+      btn.addEventListener('click', async () => {
+        if (!nextPageToken) return;
+        btn.textContent = 'loading...';
+        const data = await fetchVideos(nextPageToken);
+        const more = data.items || [];
+        videos = [...videos, ...more];
+        nextPageToken = data.nextPageToken || null;
+        renderCards(more);
+        btn.textContent = 'load more sessions ↓';
+        if (!nextPageToken) btn.style.display = 'none';
+      });
+
+    } catch(e) {
+      document.getElementById('grid').innerHTML = `
+        <div class="error-state">
+          error: ${e.message}<br><br>
+          make sure YouTube Data API v3 is enabled<br>
+          on your Google Cloud project.
+        </div>
+      `;
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>
