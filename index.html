@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* 1Tube UI Color Palette */
             --bg-base: #0a0a0a;
             --bg-surface: #141414;
             --bg-surface-hover: #222222;
@@ -19,7 +18,6 @@
             --accent-red-glow: rgba(255, 0, 0, 0.4);
             --text-main: #ffffff;
             --text-muted: #aaaaaa;
-            
             --font-main: 'Inter', sans-serif;
             --font-bold: 'Montserrat', sans-serif;
             --header-height: 70px;
@@ -27,11 +25,7 @@
             --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background-color: var(--bg-base);
@@ -42,10 +36,8 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* SVG Icons */
         .icon { width: 22px; height: 22px; fill: currentColor; }
 
-        /* Header (Top Nav) */
         header {
             position: fixed; top: 0; left: 0; right: 0; height: var(--header-height);
             background-color: rgba(10, 10, 10, 0.95); backdrop-filter: blur(10px);
@@ -53,178 +45,79 @@
             display: flex; align-items: center; justify-content: space-between; padding: 0 24px; z-index: 100;
         }
 
-        .header-left { display: flex; align-items: center; gap: 24px; }
         .logo {
             display: flex; align-items: center; gap: 6px; font-family: var(--font-bold);
             font-size: 24px; font-weight: 900; color: var(--text-main); cursor: pointer; letter-spacing: -0.5px;
         }
         .logo span { color: var(--accent-red); }
 
-        .header-center { display: flex; flex: 0 1 600px; align-items: center; }
-        .search-box { display: flex; flex: 1; height: 44px; position: relative; border-radius: 22px; overflow: hidden; background-color: var(--bg-surface); border: 1px solid var(--border-dim); transition: var(--transition-smooth); }
+        .search-box { display: flex; flex: 0 1 600px; height: 44px; position: relative; border-radius: 22px; overflow: hidden; background-color: var(--bg-surface); border: 1px solid var(--border-dim); transition: var(--transition-smooth); }
         .search-box:focus-within { border-color: var(--accent-red); box-shadow: 0 0 15px rgba(255, 0, 0, 0.2); }
-        .search-input {
-            flex: 1; background: transparent; border: none; padding: 0 20px; color: var(--text-main); font-family: var(--font-main); font-size: 15px; outline: none;
-        }
-        .search-btn {
-            background: transparent; border: none; padding: 0 20px; color: var(--text-muted); cursor: pointer; transition: var(--transition-smooth);
-        }
-        .search-btn:hover { color: var(--accent-red); }
+        .search-input { flex: 1; background: transparent; border: none; padding: 0 20px; color: var(--text-main); font-family: var(--font-main); font-size: 15px; outline: none; }
+        .search-btn { background: transparent; border: none; padding: 0 20px; color: var(--text-muted); cursor: pointer; }
 
-        /* Sidebar */
         aside {
             position: fixed; top: var(--header-height); left: 0; bottom: 0; width: var(--sidebar-width);
             background-color: var(--bg-base); border-right: 1px solid var(--border-dim); padding: 24px 12px; overflow-y: auto; z-index: 90; transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         body.sidebar-closed aside { transform: translateX(-100%); }
 
-        .sidebar-section-title {
-            font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-left: 12px;
-        }
-        .sidebar-item {
-            display: flex; align-items: center; gap: 16px; padding: 12px 16px; color: var(--text-main); border-radius: 8px;
-            cursor: pointer; font-size: 15px; font-weight: 500; transition: var(--transition-smooth); margin-bottom: 4px;
-        }
+        .sidebar-section-title { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-left: 12px; }
+        .sidebar-item { display: flex; align-items: center; gap: 16px; padding: 12px 16px; color: var(--text-main); border-radius: 8px; cursor: pointer; font-size: 15px; font-weight: 500; transition: var(--transition-smooth); margin-bottom: 4px; }
         .sidebar-item:hover { background-color: var(--bg-surface); transform: translateX(4px); }
         .sidebar-item.active { background-color: var(--accent-red); color: white; font-weight: 600; }
         .sidebar-divider { height: 1px; background-color: var(--border-dim); margin: 20px 0; }
 
-        /* Main Content Area */
-        main {
-            margin-top: var(--header-height); margin-left: var(--sidebar-width); padding: 40px; min-height: calc(100vh - var(--header-height)); transition: margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
+        main { margin-top: var(--header-height); margin-left: var(--sidebar-width); padding: 40px; min-height: calc(100vh - var(--header-height)); transition: margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
         body.sidebar-closed main { margin-left: 0; }
 
-        .feed-header {
-            font-family: var(--font-bold); font-size: 28px; color: var(--text-main); margin-bottom: 30px; letter-spacing: -0.5px;
-        }
+        .feed-header { font-family: var(--font-bold); font-size: 28px; color: var(--text-main); margin-bottom: 20px; letter-spacing: -0.5px; }
 
-        /* Home View - Grid */
         #home-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
         
-        /* Card Animation Setup */
-        .video-card {
-            display: flex; flex-direction: column; cursor: pointer; transition: var(--transition-smooth);
-            opacity: 0; transform: translateY(20px); animation: slideUp 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
-        }
+        .video-card { display: flex; flex-direction: column; cursor: pointer; transition: var(--transition-smooth); opacity: 0; transform: translateY(20px); animation: slideUp 0.6s forwards; }
         @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-
         .video-card:hover { transform: translateY(-8px); }
 
         .thumbnail-container { position: relative; width: 100%; padding-bottom: 56.25%; border-radius: 12px; overflow: hidden; background-color: var(--bg-surface); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        .thumbnail-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1); }
-        .video-card:hover .thumbnail-container img { transform: scale(1.08); }
+        .thumbnail-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
         
-        /* Red gradient overlay on hover */
-        .thumbnail-container::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); opacity: 0; transition: var(--transition-smooth);
-        }
-        .video-card:hover .thumbnail-container::after { opacity: 1; }
-
         .video-details { padding: 16px 0; display: flex; flex-direction: column; gap: 6px; }
-        .video-title { font-size: 16px; font-weight: 600; line-height: 1.4; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; transition: color 0.3s; }
+        .video-title { font-size: 16px; font-weight: 600; line-height: 1.4; color: var(--text-main); display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
         .video-card:hover .video-title { color: var(--accent-red); }
         .video-meta-grid { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); }
 
-        /* Watch View */
         #watch-view { display: none; max-width: 1500px; margin: 0 auto; gap: 40px; }
-        .watch-primary { flex: 1; min-width: 640px; animation: fadeIn 0.5s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .watch-primary { flex: 1; min-width: 640px; }
 
-        /* The Hardcore Player Wrapper */
-        .player-wrapper { 
-            width: 100%; padding-bottom: 56.25%; position: relative; background: #000; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.6); 
-        }
+        .player-wrapper { width: 100%; padding-bottom: 56.25%; position: relative; background: #000; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
         .player-wrapper iframe, .player-wrapper #yt-player { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
         
-        /* The Shield Overlay - Prevents interacting with the YT iframe natively */
-        .player-shield {
-            position: absolute; top: 0; left: 0; width: 100%; height: calc(100% - 50px); z-index: 50; cursor: pointer;
-            background: transparent;
-        }
+        .pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 45; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+        .pause-overlay.show { opacity: 1; }
+        .pause-text { font-family: var(--font-bold); font-size: 36px; letter-spacing: 12px; color: rgba(255, 255, 255, 0.2); }
 
-        /* --- CUSTOM CONTROLS UI --- */
-        .custom-controls {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 60px;
-            background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.6), transparent);
-            display: flex; flex-direction: column; justify-content: flex-end;
-            padding: 0 16px 10px 16px; z-index: 60; opacity: 0; transition: opacity 0.3s ease;
-        }
-        .player-wrapper:hover .custom-controls, .custom-controls.active { opacity: 1; }
+        .player-shield { position: absolute; top: 0; left: 0; width: 100%; height: calc(100% - 60px); z-index: 50; cursor: pointer; background: transparent; }
+
+        .custom-controls { position: absolute; bottom: 0; left: 0; width: 100%; height: 60px; background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.6), transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 0 16px 10px 16px; z-index: 60; opacity: 0; transition: opacity 0.3s ease; }
+        .player-wrapper:hover .custom-controls { opacity: 1; }
         
-        /* Progress Bar */
-        .progress-container {
-            width: 100%; height: 6px; background: rgba(255,255,255,0.2); cursor: pointer;
-            position: relative; margin-bottom: 10px; border-radius: 3px; transition: height 0.2s;
-        }
-        .progress-container:hover { height: 8px; }
-        .progress-bar {
-            height: 100%; background: var(--accent-red); width: 0%; border-radius: 3px;
-            position: relative; pointer-events: none;
-        }
-        .progress-bar::after {
-            content: ''; position: absolute; right: -6px; top: 50%; transform: translateY(-50%) scale(0);
-            width: 12px; height: 12px; background: var(--accent-red); border-radius: 50%; transition: transform 0.2s;
-        }
-        .progress-container:hover .progress-bar::after { transform: translateY(-50%) scale(1); }
+        .progress-container { width: 100%; height: 6px; background: rgba(255,255,255,0.2); cursor: pointer; position: relative; margin-bottom: 10px; border-radius: 3px; }
+        .progress-bar { height: 100%; background: var(--accent-red); width: 0%; border-radius: 3px; }
 
-        /* Control Buttons Row */
         .controls-row { display: flex; justify-content: space-between; align-items: center; }
-        .controls-left, .controls-right { display: flex; align-items: center; gap: 16px; }
-        
-        .control-btn {
-            background: transparent; border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; transition: color 0.2s;
-        }
+        .control-btn { background: transparent; border: none; color: white; cursor: pointer; display: flex; align-items: center; padding: 4px; transition: color 0.2s; }
         .control-btn:hover { color: var(--accent-red); }
-        .control-btn svg { width: 24px; height: 24px; fill: currentColor; }
 
-        /* Volume Slider */
-        .volume-container { display: flex; align-items: center; gap: 8px; }
-        .volume-slider {
-            width: 0; opacity: 0; transition: all 0.3s ease; cursor: pointer;
-            -webkit-appearance: none; background: rgba(255,255,255,0.2); height: 4px; border-radius: 2px;
-        }
-        .volume-container:hover .volume-slider { width: 80px; opacity: 1; margin-left: 5px; }
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 12px; height: 12px; background: var(--text-main); border-radius: 50%;
-        }
+        .osd-message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 15px 30px; border-radius: 8px; font-size: 24px; font-weight: bold; z-index: 70; opacity: 0; pointer-events: none; }
+        .osd-message.show { opacity: 1; }
 
-        .time-display { font-size: 13px; font-weight: 500; font-family: var(--font-main); color: #ddd; margin-left: 8px; }
-
-        /* On Screen Display (OSD) for keyboard actions */
-        .osd-message {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.8); color: white; padding: 15px 30px; border-radius: 8px;
-            font-size: 24px; font-weight: bold; font-family: var(--font-bold);
-            z-index: 70; opacity: 0; pointer-events: none; transition: opacity 0.2s;
-        }
-        .osd-message.show { opacity: 1; transition: none; }
-
-        /* Custom Quality Menu */
-        .quality-menu {
-            position: absolute; bottom: 70px; right: 20px; background: rgba(20,20,20,0.95);
-            border: 1px solid var(--border-dim); border-radius: 12px; z-index: 80;
-            display: none; flex-direction: column; overflow: hidden; backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
+        .quality-menu { position: absolute; bottom: 70px; right: 20px; background: rgba(20,20,20,0.95); border: 1px solid var(--border-dim); border-radius: 12px; z-index: 80; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         .quality-menu.show { display: flex; }
-        .quality-btn {
-            background: transparent; border: none; color: white; padding: 12px 24px;
-            font-family: var(--font-main); font-size: 14px; text-align: left; cursor: pointer;
-            transition: var(--transition-smooth); border-bottom: 1px solid var(--border-dim);
-        }
+        .quality-btn { background: transparent; border: none; color: white; padding: 12px 24px; font-family: var(--font-main); font-size: 14px; text-align: left; cursor: pointer; border-bottom: 1px solid var(--border-dim); }
         .quality-btn:hover { background: var(--accent-red); }
-        .quality-btn:last-child { border-bottom: none; }
-        .quality-menu-header {
-            padding: 12px 24px; font-weight: bold; background: #000; color: var(--accent-red);
-            font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--border-dim);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .quality-menu-close { cursor: pointer; color: white; font-size: 16px; }
-        .quality-menu-close:hover { color: var(--accent-red); }
         
-        .timer-badge { position: absolute; top: 20px; right: 20px; background: var(--accent-red); color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: bold; font-family: var(--font-bold); z-index: 60; display: none; box-shadow: 0 0 20px rgba(255,0,0,0.5); }
+        .timer-badge { position: absolute; top: 20px; right: 20px; background: var(--accent-red); color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: bold; z-index: 60; display: none; box-shadow: 0 0 20px rgba(255,0,0,0.5); }
         .timer-badge.active { display: block; }
 
         .watch-title { font-family: var(--font-bold); font-size: 24px; color: var(--text-main); margin: 24px 0 16px 0; line-height: 1.3; }
@@ -255,529 +148,378 @@
 
         .loading-state, .error-state { width: 100%; text-align: center; padding: 80px 20px; color: var(--text-muted); font-size: 18px; font-weight: 500; grid-column: 1 / -1; }
         .error-state { color: var(--accent-red); }
-        .load-more-container { grid-column: 1 / -1; display: flex; justify-content: center; padding: 40px 0; }
+        
+        #api-status-banner { margin-bottom: 20px; }
+        .status-pill { display: inline-block; padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; background: var(--bg-surface); border: 1px solid var(--border-dim); }
+        .status-pill.cached { color: #00ff88; border-color: #00ff8844; background: #00ff8811; }
+        .status-pill.piped { color: #ffaa00; border-color: #ffaa0044; background: #ffaa0011; }
+        .status-pill.yt { color: var(--accent-red); border-color: rgba(255,0,0,0.3); background: rgba(255,0,0,0.1); }
 
-        /* Generic System Modals & Warnings */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.9); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); transition: opacity 0.3s ease; }
-        .modal-content { background-color: var(--bg-surface); padding: 50px; border-radius: 24px; text-align: center; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.8); border: 1px solid #333; transform: scale(0.95); animation: popIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; }
-        @keyframes popIn { to { transform: scale(1); } }
-        
-        .modal-icon { color: var(--accent-red); margin-bottom: 24px; font-size: 48px; }
-        .modal-title { font-family: var(--font-bold); font-size: 32px; margin-bottom: 16px; color: var(--text-main); letter-spacing: -1px; }
-        .modal-text { color: var(--text-muted); margin-bottom: 32px; line-height: 1.6; font-size: 15px; }
-        .btn-danger { background-color: var(--accent-red); color: #fff; border: none; padding: 14px 32px; border-radius: 30px; font-family: var(--font-bold); font-size: 15px; cursor: pointer; transition: var(--transition-smooth); text-transform: uppercase; box-shadow: 0 4px 15px rgba(255,0,0,0.3); }
-        .btn-danger:hover { background-color: var(--accent-red-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,0,0,0.4); }
-        .modal-actions { display: flex; gap: 16px; justify-content: center; }
-        
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.9); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
+        .modal-content { background-color: var(--bg-surface); padding: 50px; border-radius: 24px; text-align: center; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
+        .btn-danger { background-color: var(--accent-red); color: #fff; border: none; padding: 14px 32px; border-radius: 30px; font-family: var(--font-bold); font-size: 15px; cursor: pointer; text-transform: uppercase; }
+
         .hidden { display: none !important; }
 
-        @media (max-width: 1024px) { #watch-view { flex-direction: column; } .watch-secondary { width: 100%; } }
-        @media (max-width: 768px) { aside { transform: translateX(-100%); } body.sidebar-open aside { transform: translateX(0); } main { margin-left: 0; padding: 24px; } .header-center { display: none; } .watch-primary { min-width: 100%; } #home-view { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            aside { transform: translateX(-100%); }
+            body.sidebar-open aside { transform: translateX(0); }
+            main { margin-left: 0; padding: 20px; }
+            #home-view { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- Header / Nav -->
     <header>
         <div class="header-left">
-            <button class="menu-btn" onclick="toggleSidebar()" style="background:none; border:none; color:var(--text-main); cursor:pointer;">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg>
-            </button>
-            <div class="logo" onclick="goHome()">
-                1<span>Tube</span>
-            </div>
+            <button class="control-btn" onclick="toggleSidebar()"><svg class="icon" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path></svg></button>
+            <div class="logo" onclick="goHome()">1<span>Tube</span></div>
         </div>
-        <div class="header-center">
-            <div class="search-box">
-                <input type="text" id="search-input" class="search-input" placeholder="Search the library...">
-                <button id="search-btn" class="search-btn">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
-                </button>
-            </div>
+        <div class="search-box">
+            <input type="text" id="search-input" class="search-input" placeholder="Search the full catalog...">
+            <button id="search-btn" class="search-btn"><svg class="icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg></button>
         </div>
-        <div class="header-right">
-            <div style="width:36px; height:36px; border-radius:50%; background:var(--accent-red); display:flex; align-items:center; justify-content:center; font-weight:bold;">1T</div>
-        </div>
+        <div class="header-right"><div style="width:36px; height:36px; border-radius:50%; background:var(--accent-red); display:flex; align-items:center; justify-content:center; font-weight:bold;">1T</div></div>
     </header>
 
-    <!-- Sidebar -->
     <aside id="sidebar">
         <div class="sidebar-item active" id="nav-home" onclick="goHome()">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>
-            Home
+            <svg class="icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"></path></svg>Home
         </div>
         <div class="sidebar-divider"></div>
         <div class="sidebar-section-title">Subscriptions</div>
-        <div id="sidebar-channels">
-            <!-- Channels dynamically injected here -->
+        <div id="sidebar-channels"></div>
+        <div class="sidebar-divider"></div>
+        <div class="sidebar-item" onclick="forceSync()" style="color: var(--text-muted);">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path></svg> Refresh Sync (Clear Cache)
         </div>
     </aside>
 
-    <!-- Main Content: Home / Filtered Feed -->
     <main id="home-main">
         <div class="feed-header" id="feed-header-title">Home</div>
-        <div id="home-view">
-            <div class="loading-state">Syncing secure feed...</div>
-        </div>
-        <div id="load-more-zone" class="load-more-container hidden">
-            <button class="btn-action" onclick="fetchAllPlaylistItems()" id="btn-load-more">Load More</button>
-        </div>
+        <div id="api-status-banner"></div>
+        <div id="home-view"><div class="loading-state">Syncing secure feed from API/Cache...</div></div>
     </main>
 
-    <!-- Main Content: Watch Page -->
     <main id="watch-main" class="hidden">
         <div id="watch-view">
             <div class="watch-primary">
                 <div class="player-wrapper" id="player-wrapper">
-                    <!-- Timer for TMKOC -->
                     <div id="tmkoc-timer" class="timer-badge">00:00 / 30:00</div>
-                    
-                    <!-- The YouTube API will replace this div with the iframe -->
                     <div id="yt-player"></div>
-                    
-                    <!-- The Glass Shield: Blocks ALL clicks to the iframe, but leaves room for bottom controls -->
+                    <div id="pause-overlay" class="pause-overlay"><div class="pause-text">PAUSED</div></div>
                     <div class="player-shield" id="player-shield"></div>
-
-                    <!-- CUSTOM CONTROLS UI -->
                     <div class="custom-controls" id="custom-controls">
-                        <!-- Progress Bar -->
-                        <div class="progress-container" id="progress-container">
-                            <div class="progress-bar" id="progress-bar"></div>
-                        </div>
-                        
-                        <!-- Control Buttons -->
+                        <div class="progress-container" id="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
                         <div class="controls-row">
-                            <div class="controls-left">
-                                <button class="control-btn" id="play-pause-btn" title="Play / Pause (Space)">
-                                    <svg id="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                                    <svg id="icon-pause" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                                </button>
-                                
-                                <div class="volume-container">
-                                    <button class="control-btn" id="mute-btn" title="Mute (m)">
-                                        <svg id="icon-vol-high" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                                        <svg id="icon-vol-mute" viewBox="0 0 24 24" style="display:none;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
-                                    </button>
-                                    <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="100">
-                                </div>
-                                
-                                <span class="time-display" id="time-display">0:00 / 0:00</span>
+                            <div style="display:flex; align-items:center; gap:16px;">
+                                <button class="control-btn" id="play-btn"><svg id="p-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+                                <button class="control-btn" id="mute-btn"><svg id="m-icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg></button>
+                                <span id="time-display" style="font-size:13px;">0:00 / 0:00</span>
                             </div>
-                            
-                            <div class="controls-right">
-                                <button class="control-btn" id="settings-btn" title="Quality Settings (s)">
-                                    <svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.43-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
-                                </button>
-                                <button class="control-btn" id="fullscreen-btn" title="Fullscreen (f)">
-                                    <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-                                </button>
+                            <div style="display:flex; align-items:center; gap:16px;">
+                                <button class="control-btn" id="sett-btn"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94s-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87c-0.12,0.21-0.08,0.47,0.12,0.61l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.43-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg></button>
+                                <button class="control-btn" onclick="toggleFullscreen()"><svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
                             </div>
                         </div>
                     </div>
-
-                    <!-- On Screen Display (OSD) -->
-                    <div id="osd-message" class="osd-message"></div>
-
-                    <!-- Custom Quality Menu -->
-                    <div id="quality-menu" class="quality-menu">
-                        <div class="quality-menu-header">
-                            <span>Set Quality</span>
-                            <span class="quality-menu-close" id="quality-close">✕</span>
-                        </div>
-                        <button class="quality-btn" data-quality="highres">Force 2160p / Highest</button>
-                        <button class="quality-btn" data-quality="hd1440">Force 1440p (HD)</button>
-                        <button class="quality-btn" data-quality="hd1080">Force 1080p (HD)</button>
-                        <button class="quality-btn" data-quality="hd720">Force 720p</button>
-                        <button class="quality-btn" data-quality="default">Auto</button>
+                    <div id="osd" class="osd-message"></div>
+                    <div id="q-menu" class="quality-menu">
+                        <button class="quality-btn" onclick="setQ('highres')">2160p (4K)</button>
+                        <button class="quality-btn" onclick="setQ('hd1440')">1440p (HD)</button>
+                        <button class="quality-btn" onclick="setQ('hd1080')">1080p (HD)</button>
+                        <button class="quality-btn" onclick="setQ('hd720')">720p</button>
                     </div>
                 </div>
-                <h1 class="watch-title" id="watch-title">Loading...</h1>
-                
+                <h1 class="watch-title" id="w-title">Loading...</h1>
                 <div class="watch-meta-row">
                     <div class="watch-channel-info">
-                        <img src="" alt="Avatar" class="watch-channel-avatar" id="watch-avatar">
-                        <div class="watch-channel-details">
-                            <span class="watch-channel-name" id="watch-channel-name">Channel Name</span>
-                            <span class="watch-sub-count">Subscribed</span>
-                        </div>
+                        <img src="" class="watch-channel-avatar" id="w-avatar">
+                        <div class="watch-channel-details"><span class="watch-channel-name" id="w-name">Channel</span><span class="watch-sub-count">Verified 1Tube Node</span></div>
                     </div>
                 </div>
-                
-                <div class="watch-description" id="watch-desc"></div>
+                <div class="watch-description" id="w-desc"></div>
             </div>
-
-            <div class="watch-secondary">
-                <div id="watch-secondary-list"></div>
-            </div>
+            <div class="watch-secondary" id="w-sec"></div>
         </div>
     </main>
 
-    <!-- Generic System Alert Modal -->
-    <div id="system-alert" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="modal-icon">⛔</div>
-            <h2 class="modal-title" id="sys-alert-title">ACCESS DENIED</h2>
-            <div class="modal-text" id="sys-alert-text">Message goes here.</div>
-            <div class="modal-actions">
-                <button id="btn-close-alert" class="btn-action">Understood</button>
-            </div>
-        </div>
-    </div>
+    <div id="system-alert" class="modal-overlay hidden"><div class="modal-content"><h2 id="alert-t" class="modal-title">DENIED</h2><p id="alert-msg" class="modal-text"></p><button onclick="closeAlert()" class="btn-danger">Acknowledge</button></div></div>
+    <div id="tm-warn" class="modal-overlay hidden"><div class="modal-content"><h2 class="modal-title">Food Required</h2><p class="modal-text">TMKOC video detected. Protocol requires active consumption of nutrients.<br><br>30m session / 1h daily / 15m interrupts enabled.</p><div style="display:flex;gap:16px;justify-content:center;"><button onclick="closeTm()" class="btn-action">Cancel</button><button onclick="startTm()" class="btn-danger">I am eating</button></div></div></div>
 
-    <!-- TMKOC Eating Warning Modal -->
-    <div id="tmkoc-warning" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="modal-icon">🍽️</div>
-            <h2 class="modal-title">Food Required</h2>
-            <div class="modal-text">
-                This is a <strong>Refreshment Video</strong> (TMKOC).<br><br>
-                You are only permitted to watch this if you are actively eating.<br><br>
-                <strong>Limits:</strong> 30 min/session • 1 hr/day • Closes every 15 mins.
-            </div>
-            <div class="modal-actions">
-                <button id="btn-cancel-tmkoc" class="btn-action">Nevermind</button>
-                <button id="btn-proceed-tmkoc" class="btn-danger">I am eating</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Load YouTube Iframe API -->
     <script src="https://www.youtube.com/iframe_api"></script>
-
     <script>
-        // API Configuration
+        // --- 3-Tier Fallback Configuration ---
         const API_KEY = 'AIzaSyCubEB4VWGofjhJli1FAf2L4hmyq5WN8Gc';
+        const YT_BASE = 'https://www.googleapis.com/youtube/v3';
         
-        // Target Allowed Channels
-        const TARGET_CHANNELS = [
-            { type: 'id', value: 'UCp8qsMmzox7vFvUJyPuVr5A', isTmkoc: false }, // Malviya
-            { type: 'id', value: 'UCnSFZ-olBoLGLRUS_3RI2Aw', isTmkoc: true },  // TMKOC
-            { type: 'handle', value: '@meditations.acepe', isTmkoc: false }   // Acepe
+        const PIPED_INSTANCES = [
+            'https://pipedapi.kavin.rocks',
+            'https://pipedapi.adminforge.de',
+            'https://api.piped.yt',
+            'https://pipedapi.in.projectsegfau.lt',
+            'https://piped-api.garudalinux.org',
+            'https://watchapi.whatever.social',
+            'https://api.piped.projectsegfau.lt'
         ];
         
+        const TARGET_CHANNELS = [
+            { id: 'UCp8qsMmzox7vFvUJyPuVr5A', isTmkoc: false }, // Malviya
+            { id: 'UCnSFZ-olBoLGLRUS_3RI2Aw', isTmkoc: true },  // TMKOC
+            { id: 'UC_u628m-O68NIDlRk0K_Sdw', isTmkoc: false }  // Acepe (Using ID directly to save an API call)
+        ];
+        
+        // TTL Settings
+        const CACHE_TTL_CHANNELS = 7 * 24 * 60 * 60 * 1000; // 7 days
+        const CACHE_TTL_VIDEOS = 6 * 60 * 60 * 1000;        // 6 hours
+
         // App State
         let channelsData = {};
         let allVideos = [];
-        let isFetching = false;
-        let pendingVideoLaunch = null;
-        let currentFilterId = null; 
+        let player = null, progressInt = null, tmkocInt = null, tmkocSession = 0, tmkocInterrupt = 0, curFilterId = null, pendingLaunch = null;
 
-        // YT Player State
-        let player = null;
-        let currentVideoId = null;
-        let osdTimeout = null;
-        let progressInterval = null;
-
-        // TMKOC Restriction State
-        let tmkocInterval = null;
-        let tmkocSessionTime = 0; 
-        let tmkocInterruptTime = 0; 
-
-        // DOM
-        const homeMain = document.getElementById('home-main');
-        const watchMain = document.getElementById('watch-main');
-        const homeView = document.getElementById('home-view');
-        const watchView = document.getElementById('watch-view');
-        const watchSecondaryList = document.getElementById('watch-secondary-list');
-        const btnLoadMore = document.getElementById('btn-load-more');
-        const loadMoreZone = document.getElementById('load-more-zone');
-        const sidebarChannels = document.getElementById('sidebar-channels');
-        const searchInput = document.getElementById('search-input');
-        const searchBtn = document.getElementById('search-btn');
-        const feedHeaderTitle = document.getElementById('feed-header-title');
-        const tmkocTimerBadge = document.getElementById('tmkoc-timer');
-        const playerShield = document.getElementById('player-shield');
-        const playerWrapper = document.getElementById('player-wrapper');
-        const osdMessage = document.getElementById('osd-message');
-        const qualityMenu = document.getElementById('quality-menu');
-        
-        // Custom Controls DOM
-        const playPauseBtn = document.getElementById('play-pause-btn');
-        const iconPlay = document.getElementById('icon-play');
-        const iconPause = document.getElementById('icon-pause');
-        const muteBtn = document.getElementById('mute-btn');
-        const iconVolHigh = document.getElementById('icon-vol-high');
-        const iconVolMute = document.getElementById('icon-vol-mute');
-        const volumeSlider = document.getElementById('volume-slider');
-        const timeDisplay = document.getElementById('time-display');
-        const progressBar = document.getElementById('progress-bar');
-        const progressContainer = document.getElementById('progress-container');
-        const settingsBtn = document.getElementById('settings-btn');
-        const fullscreenBtn = document.getElementById('fullscreen-btn');
-
-        // Helpers
-        function decodeHTML(html) { const txt = document.createElement('textarea'); txt.innerHTML = html || ''; return txt.value; }
-        function formatTimeAgo(isoString) {
-            if (!isoString) return '';
-            const seconds = Math.floor((new Date() - new Date(isoString)) / 1000);
-            let interval = seconds / 31536000; if (interval > 1) return Math.floor(interval) + " years ago";
-            interval = seconds / 2592000; if (interval > 1) return Math.floor(interval) + " months ago";
-            interval = seconds / 86400; if (interval > 1) return Math.floor(interval) + " days ago";
-            interval = seconds / 3600; if (interval > 1) return Math.floor(interval) + " hours ago";
-            return Math.floor(seconds / 60) + " minutes ago";
-        }
-        function formatTimer(totalSeconds) {
-            const h = Math.floor(totalSeconds / 3600);
-            const m = Math.floor((totalSeconds % 3600) / 60);
-            const s = Math.floor(totalSeconds % 60).toString().padStart(2, '0');
-            if (h > 0) return `${h}:${m.toString().padStart(2, '0')}:${s}`;
-            return `${m}:${s}`;
+        // --- Caching Logic ---
+        function getCache(key, ttl, forceFallback = false) {
+            const cached = localStorage.getItem(key);
+            if (!cached) return null;
+            try {
+                const parsed = JSON.parse(cached);
+                if (!forceFallback && (Date.now() - parsed.timestamp > ttl)) return null;
+                return parsed.data;
+            } catch (e) {
+                return null;
+            }
         }
 
-        function toggleSidebar() {
-            if (window.innerWidth <= 768) document.body.classList.toggle('sidebar-open');
-            else document.body.classList.toggle('sidebar-closed');
+        function setCache(key, data) {
+            localStorage.setItem(key, JSON.stringify({ timestamp: Date.now(), data }));
         }
 
-        function updateSidebarActive(channelId) {
-            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-            if (channelId === null) document.getElementById('nav-home').classList.add('active');
-            else { const el = document.getElementById(`nav-ch-${channelId}`); if (el) el.classList.add('active'); }
+        function forceSync() {
+            localStorage.removeItem('1tube_cache_channels');
+            localStorage.removeItem('1tube_cache_videos');
+            location.reload();
         }
 
-        // --- Custom Player Controls UI Interaction --- //
-
-        function showOSD(text) {
-            osdMessage.textContent = text;
-            osdMessage.classList.add('show');
-            clearTimeout(osdTimeout);
-            osdTimeout = setTimeout(() => osdMessage.classList.remove('show'), 800);
+        function showApiStatus(message, type) {
+            const banner = document.getElementById('api-status-banner');
+            banner.innerHTML = `<div class="status-pill ${type}">${message}</div>`;
         }
 
-        // UI Event Listeners
-        playPauseBtn.addEventListener('click', togglePlayPause);
-        muteBtn.addEventListener('click', toggleMute);
-        fullscreenBtn.addEventListener('click', toggleFullscreen);
-        
-        settingsBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            qualityMenu.classList.toggle('show');
-        });
-
-        volumeSlider.addEventListener('input', (e) => {
-            const vol = e.target.value;
-            if (player && typeof player.setVolume === 'function') {
-                player.setVolume(vol);
-                if (vol > 0 && player.isMuted()) {
-                    player.unMute();
-                    updateMuteIcon(false);
-                } else if (vol == 0 && !player.isMuted()) {
-                    player.mute();
-                    updateMuteIcon(true);
+        // --- Piped Instance Looper ---
+        async function fetchPiped(endpoint) {
+            for (let i = 0; i < PIPED_INSTANCES.length; i++) {
+                try {
+                    const res = await fetch(PIPED_INSTANCES[i] + endpoint);
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return await res.json();
+                } catch (e) {
+                    console.warn(`Piped Proxy [${PIPED_INSTANCES[i]}] failed, trying next...`);
                 }
             }
-        });
+            throw new Error("ALL_PIPED_FAILED");
+        }
 
-        progressContainer.addEventListener('click', (e) => {
-            if (!player || typeof player.getDuration !== 'function') return;
-            const rect = progressContainer.getBoundingClientRect();
-            const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-            const newTime = pct * player.getDuration();
-            player.seekTo(newTime, true);
-            updateProgressUI();
-        });
+        // --- The Core Sync Logic (Cache -> YT -> Piped -> Expired Cache) ---
+        async function init() {
+            // 1. Try to load completely from valid Cache instantly
+            const cachedChannels = getCache('1tube_cache_channels', CACHE_TTL_CHANNELS);
+            const cachedVideos = getCache('1tube_cache_videos', CACHE_TTL_VIDEOS);
 
-        // Keyboard commands
-        document.addEventListener('keydown', (e) => {
-            if (watchMain.classList.contains('hidden') || !player) return;
-            if (document.activeElement === searchInput) return;
-
-            switch(e.key.toLowerCase()) {
-                case ' ': e.preventDefault(); togglePlayPause(); break;
-                case 'f': e.preventDefault(); toggleFullscreen(); break;
-                case 'm': e.preventDefault(); toggleMute(); break;
-                case 'arrowright': e.preventDefault(); seekVideo(10); break;
-                case 'arrowleft': e.preventDefault(); seekVideo(-10); break;
-                case 's': e.preventDefault(); qualityMenu.classList.toggle('show'); break;
+            if (cachedChannels && cachedVideos && Object.keys(cachedChannels).length > 0 && cachedVideos.length > 0) {
+                channelsData = cachedChannels;
+                allVideos = cachedVideos;
+                renderSidebar();
+                renderHomeGrid(allVideos, false);
+                showApiStatus("Loaded instantly from Local Cache (Zero API Burn).", "cached");
+                return;
             }
-        });
 
-        playerShield.addEventListener('click', () => {
-            if (qualityMenu.classList.contains('show')) qualityMenu.classList.remove('show');
-            else togglePlayPause();
-        });
+            // 2. Cache is missing or expired. Let's do a network sync.
+            document.getElementById('home-view').innerHTML = '<div class="loading-state">Syncing secure feed from Network...</div>';
+            let newChannels = {};
+            let newVideos = [];
+            let sourceUsed = 'youtube';
 
-        document.getElementById('quality-close').addEventListener('click', () => qualityMenu.classList.remove('show'));
-        document.querySelectorAll('.quality-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const q = e.target.getAttribute('data-quality');
-                if (player && typeof player.setPlaybackQuality === 'function') player.setPlaybackQuality(q);
-                showOSD(`Requested: ${e.target.textContent.replace('Force ', '')}`);
-                qualityMenu.classList.remove('show');
-            });
-        });
-
-        function togglePlayPause() {
-            if (!player || typeof player.getPlayerState !== 'function') return;
-            const state = player.getPlayerState();
-            if (state === 1) { // Playing
-                player.pauseVideo();
-                showOSD("Paused");
-            } else {
-                player.playVideo();
-                showOSD("Playing");
-            }
-        }
-
-        function updatePlayIcon(isPlaying) {
-            if (isPlaying) {
-                iconPlay.style.display = 'none';
-                iconPause.style.display = 'block';
-            } else {
-                iconPlay.style.display = 'block';
-                iconPause.style.display = 'none';
-            }
-        }
-
-        function toggleMute() {
-            if (!player || typeof player.isMuted !== 'function') return;
-            if(player.isMuted()) { 
-                player.unMute(); 
-                volumeSlider.value = player.getVolume();
-                updateMuteIcon(false);
-                showOSD("Unmuted"); 
-            } else { 
-                player.mute(); 
-                volumeSlider.value = 0;
-                updateMuteIcon(true);
-                showOSD("Muted"); 
-            }
-        }
-
-        function updateMuteIcon(isMuted) {
-            if (isMuted) {
-                iconVolHigh.style.display = 'none';
-                iconVolMute.style.display = 'block';
-            } else {
-                iconVolHigh.style.display = 'block';
-                iconVolMute.style.display = 'none';
-            }
-        }
-
-        function seekVideo(seconds) {
-            if (!player || typeof player.getCurrentTime !== 'function') return;
-            const curr = player.getCurrentTime();
-            player.seekTo(curr + seconds, true);
-            showOSD(seconds > 0 ? `+${seconds}s` : `${seconds}s`);
-            updateProgressUI();
-        }
-
-        function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                playerWrapper.requestFullscreen().catch(err => console.log(err));
-            } else {
-                document.exitFullscreen();
-            }
-        }
-
-        function updateProgressUI() {
-            if (!player || typeof player.getCurrentTime !== 'function') return;
-            const current = player.getCurrentTime() || 0;
-            const duration = player.getDuration() || 0;
-            const pct = duration > 0 ? (current / duration) * 100 : 0;
-            
-            progressBar.style.width = `${pct}%`;
-            timeDisplay.textContent = `${formatTimer(current)} / ${formatTimer(duration)}`;
-        }
-
-        // --- YouTube API Implementation --- //
-
-        function onYouTubeIframeAPIReady() {
-            // Ready to spawn player when needed
-        }
-
-        function onPlayerReady(event) {
-            event.target.setPlaybackQuality('highres');
-            event.target.playVideo();
-            updateProgressUI();
-            
-            // Sync volume UI with actual player state
-            if(event.target.isMuted()) {
-                volumeSlider.value = 0;
-                updateMuteIcon(true);
-            } else {
-                volumeSlider.value = event.target.getVolume();
-                updateMuteIcon(false);
-            }
-        }
-
-        function onPlayerStateChange(event) {
-            if (event.data === YT.PlayerState.PLAYING) {
-                event.target.setPlaybackQuality('highres');
-                updatePlayIcon(true);
+            try {
+                // Try YouTube API First
+                const channelIds = TARGET_CHANNELS.map(c => c.id).join(',');
+                const ytChUrl = `${YT_BASE}/channels?part=snippet,contentDetails&id=${channelIds}&key=${API_KEY}`;
+                const chRes = await fetch(ytChUrl);
                 
-                // Start Progress Loop
-                clearInterval(progressInterval);
-                progressInterval = setInterval(updateProgressUI, 500);
-            } else {
-                updatePlayIcon(false);
-                clearInterval(progressInterval);
-            }
-        }
-
-        function loadVideoIntoPlayer(videoId) {
-            currentVideoId = videoId;
-            clearInterval(progressInterval);
-            progressBar.style.width = '0%';
-            timeDisplay.textContent = '0:00 / 0:00';
-            updatePlayIcon(false);
-
-            if (player) {
-                player.loadVideoById({ videoId: videoId, suggestedQuality: 'highres' });
-            } else {
-                player = new YT.Player('yt-player', {
-                    videoId: videoId,
-                    playerVars: {
-                        'autoplay': 1,
-                        'controls': 0,        
-                        'disablekb': 1,       
-                        'fs': 0,              
-                        'modestbranding': 1,  
-                        'rel': 0,             
-                        'iv_load_policy': 3,  
-                        'playsinline': 1,
-                        'vq': 'hd2160'        
-                    },
-                    events: {
-                        'onReady': onPlayerReady,
-                        'onStateChange': onPlayerStateChange
-                    }
+                if (!chRes.ok) {
+                    if (chRes.status === 403) throw new Error("QUOTA");
+                    throw new Error("HTTP " + chRes.status);
+                }
+                
+                const chData = await chRes.json();
+                chData.items.forEach(item => {
+                    const tc = TARGET_CHANNELS.find(c => c.id === item.id);
+                    newChannels[item.id] = {
+                        id: item.id, title: item.snippet.title, avatarUrl: item.snippet.thumbnails.default.url,
+                        uploadsPlaylistId: item.contentDetails.relatedPlaylists.uploads, isTmkoc: tc.isTmkoc
+                    };
                 });
+
+                // Fetch YT Videos
+                const vidPromises = Object.values(newChannels).map(async (ch) => {
+                    const vidUrl = `${YT_BASE}/playlistItems?part=snippet,contentDetails&maxResults=25&playlistId=${ch.uploadsPlaylistId}&key=${API_KEY}`;
+                    const vidRes = await fetch(vidUrl);
+                    if (!vidRes.ok) throw new Error("QUOTA");
+                    const vidData = await vidRes.json();
+                    
+                    vidData.items.forEach(item => {
+                        newVideos.push({
+                            videoId: item.snippet.resourceId.videoId,
+                            title: item.snippet.title,
+                            thumbnail: item.snippet.thumbnails.medium?.url || item.snippet.thumbnails.default?.url,
+                            timestamp: new Date(item.snippet.publishedAt).getTime(),
+                            displayDate: formatTimeAgo(item.snippet.publishedAt),
+                            channelId: item.snippet.channelId,
+                            isTmkoc: ch.isTmkoc
+                        });
+                    });
+                });
+                await Promise.all(vidPromises);
+
+            } catch (err) {
+                console.warn(`YouTube API failed (${err.message}), falling back to Piped...`);
+                sourceUsed = 'piped';
+                newChannels = {};
+                newVideos = [];
+
+                try {
+                    // Fallback to Piped
+                    const pipedPromises = TARGET_CHANNELS.map(async (tc) => {
+                        const data = await fetchPiped(`/channel/${tc.id}`);
+                        newChannels[tc.id] = {
+                            id: tc.id, title: data.name, avatarUrl: data.avatarUrl, isTmkoc: tc.isTmkoc
+                        };
+                        
+                        if (data.relatedStreams) {
+                            data.relatedStreams.slice(0, 25).forEach(v => {
+                                const vidId = v.url.split('v=')[1] || v.url.split('/watch?v=')[1] || v.url.split('/').pop();
+                                newVideos.push({
+                                    videoId: vidId,
+                                    title: v.title,
+                                    thumbnail: v.thumbnail,
+                                    timestamp: v.uploaded || Date.now(), // Piped gives unix ms
+                                    displayDate: v.uploadedDate || "Recently",
+                                    channelId: tc.id,
+                                    isTmkoc: tc.isTmkoc
+                                });
+                            });
+                        }
+                    });
+                    
+                    await Promise.all(pipedPromises);
+
+                } catch (pipedErr) {
+                    console.error("Both YouTube API and Piped Proxies failed.", pipedErr);
+                    sourceUsed = 'failed';
+                }
+            }
+
+            // 3. Finalize Data
+            if (sourceUsed !== 'failed' && newVideos.length > 0) {
+                channelsData = newChannels;
+                allVideos = newVideos;
+                setCache('1tube_cache_channels', channelsData);
+                setCache('1tube_cache_videos', allVideos);
+                
+                renderSidebar();
+                renderHomeGrid(allVideos, false);
+                
+                if (sourceUsed === 'youtube') showApiStatus("Live sync via YouTube API.", "yt");
+                if (sourceUsed === 'piped') showApiStatus("YT Quota Reached. Synced via Open Proxies.", "piped");
+                
+            } else {
+                // Total Failure - Try Forced Cache Rescue
+                const forcedCh = getCache('1tube_cache_channels', CACHE_TTL_CHANNELS, true);
+                const forcedVid = getCache('1tube_cache_videos', CACHE_TTL_VIDEOS, true);
+                
+                if (forcedCh && forcedVid && forcedVid.length > 0) {
+                    channelsData = forcedCh;
+                    allVideos = forcedVid;
+                    renderSidebar();
+                    renderHomeGrid(allVideos, false);
+                    showApiStatus("Network Error. Displaying expired local cache as fallback.", "piped");
+                } else {
+                    document.getElementById('home-view').innerHTML = `<div class="error-state">System Offline. Both APIs failed and no cache exists.</div>`;
+                }
             }
         }
 
-        function stopVideo() {
-            if (player && typeof player.stopVideo === 'function') {
-                player.stopVideo();
-                clearInterval(progressInterval);
-                updatePlayIcon(false);
-            }
-            if (document.fullscreenElement) {
-                document.exitFullscreen();
-            }
-            qualityMenu.classList.remove('show');
+        // --- UI rendering ---
+        function renderSidebar() {
+            const side = document.getElementById('sidebar-channels');
+            side.innerHTML = '';
+            Object.values(channelsData).forEach(channel => {
+                const avatar = `<img src="${channel.avatarUrl}" style="width:24px; height:24px; border-radius:50%;">`;
+                side.innerHTML += `<div class="sidebar-item" id="nav-ch-${channel.id}" onclick="filter('${channel.id}')">${avatar} <span style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${channel.title}</span></div>`;
+            });
         }
 
-        // --- Interleaved Feed Logic --- //
+        function renderHomeGrid(items, isSearchResult = false) {
+            const homeView = document.getElementById('home-view');
+            homeView.innerHTML = '';
+            let renderedCount = 0;
+            
+            let displayItems = items;
+            if (!isSearchResult && currentFilterId === null) {
+                displayItems = getMixedFeed(items);
+            }
+
+            displayItems.forEach((item, index) => {
+                const videoId = item.videoId;
+                if(!videoId) return;
+
+                const channelId = item.channelId;
+                const channel = channelsData[channelId];
+                if (!channel) return;
+
+                if (currentFilterId === null) { if (channel.isTmkoc) return; } 
+                else { if (channelId !== currentFilterId) return; }
+
+                const title = decodeHTML(item.title);
+                if (title === "Private video" || title === "Deleted video") return;
+
+                renderedCount++;
+
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.style.animationDelay = `${(index % 25) * 0.05}s`; 
+                card.onclick = () => openWatchView(videoId, item, channel);
+                
+                card.innerHTML = `
+                    <div class="thumbnail-container"><img src="${item.thumbnail}"></div>
+                    <div class="video-details">
+                        <div class="video-title" title="${title}">${title}</div>
+                        <div class="video-meta-grid"><span>${channel.title.substring(0, 20)}</span><span>${item.displayDate}</span></div>
+                    </div>
+                `;
+                homeView.appendChild(card);
+            });
+
+            if (renderedCount === 0 && !isSearchResult) homeView.innerHTML = `<div class="error-state">No videos available here.</div>`;
+        }
+
         function getMixedFeed(videosToMix) {
             const malviyaId = 'UCp8qsMmzox7vFvUJyPuVr5A';
             const grouped = {};
             
             videosToMix.forEach(v => {
-                const cid = v.snippet.channelId;
+                const cid = v.channelId;
                 if (!grouped[cid]) grouped[cid] = [];
                 grouped[cid].push(v);
             });
             
             Object.keys(grouped).forEach(k => {
-                grouped[k].sort((a, b) => new Date(b.snippet.publishedAt) - new Date(a.snippet.publishedAt));
+                grouped[k].sort((a, b) => b.timestamp - a.timestamp); // Sort by normalized timestamp
             });
 
-            const orderedKeys = Object.keys(grouped).sort((a, b) => {
-                if(a === malviyaId) return -1;
-                if(b === malviyaId) return 1;
-                return 0; 
-            });
+            const orderedKeys = Object.keys(grouped).sort((a, b) => (a === malviyaId ? -1 : (b === malviyaId ? 1 : 0)));
 
             const mixed = [];
             let hasMore = true;
@@ -796,100 +538,9 @@
             return mixed;
         }
 
-        // --- TMKOC Restriction Logic --- //
-        function showSystemAlert(title, message) {
-            document.getElementById('sys-alert-title').textContent = title;
-            document.getElementById('sys-alert-text').innerHTML = message;
-            document.getElementById('system-alert').classList.remove('hidden');
-        }
-
-        document.getElementById('btn-close-alert').addEventListener('click', () => {
-            document.getElementById('system-alert').classList.add('hidden');
-        });
-
-        function stopTmkocTimer() {
-            clearInterval(tmkocInterval);
-            tmkocTimerBadge.classList.remove('active');
-        }
-
-        function triggerTmkocFrustration() {
-            stopTmkocTimer();
-            goHome();
-            showSystemAlert("ENOUGH.", "15 minutes elapsed.<br><br>The video has been automatically closed.<br>Get back to work.");
-        }
-
-        function triggerTmkocHardBlock(reason) {
-            stopTmkocTimer();
-            goHome();
-            showSystemAlert("ACCESS DENIED", reason);
-        }
-
-        function startTmkocTimer() {
-            stopTmkocTimer();
-            tmkocInterruptTime = 0; 
-            tmkocTimerBadge.classList.add('active');
-
-            const today = new Date().toISOString().split('T')[0];
-            if (localStorage.getItem('1tube_tmkoc_date') !== today) {
-                localStorage.setItem('1tube_tmkoc_date', today);
-                localStorage.setItem('1tube_tmkoc_daily_time', '0');
-            }
-
-            tmkocInterval = setInterval(() => {
-                let dailyTime = parseInt(localStorage.getItem('1tube_tmkoc_daily_time') || '0');
-                
-                dailyTime++;
-                tmkocSessionTime++;
-                tmkocInterruptTime++;
-                
-                localStorage.setItem('1tube_tmkoc_daily_time', dailyTime);
-                tmkocTimerBadge.textContent = `${formatTimer(tmkocSessionTime)} / 30:00`;
-
-                if (dailyTime >= 3600) triggerTmkocHardBlock("Daily allowance (1 hour) exhausted.<br>Access locked until tomorrow.");
-                else if (tmkocSessionTime >= 1800) triggerTmkocHardBlock("Session allowance (30 mins) exhausted.<br>You must restart to reset the session.");
-                else if (tmkocInterruptTime >= 900) triggerTmkocFrustration(); 
-            }, 1000);
-        }
-
-        // --- Navigation --- //
-        function goHome() {
-            if (window.innerWidth <= 768) document.body.classList.remove('sidebar-open');
-            currentFilterId = null;
-            updateSidebarActive(null);
-            feedHeaderTitle.innerHTML = `Home`;
-            
-            watchMain.classList.add('hidden');
-            watchView.style.display = 'none';
-            homeMain.classList.remove('hidden');
-            stopVideo();
-            stopTmkocTimer();
-            window.scrollTo(0, 0);
-            
-            if(searchInput.value.trim() === '') renderHomeGrid(allVideos, false);
-            else executeSearch();
-        }
-
-        function filterByChannel(channelId) {
-            if (window.innerWidth <= 768) document.body.classList.remove('sidebar-open');
-            currentFilterId = channelId;
-            updateSidebarActive(channelId);
-            const chName = channelsData[channelId].title;
-            feedHeaderTitle.innerHTML = `${chName}`;
-            
-            watchMain.classList.add('hidden');
-            watchView.style.display = 'none';
-            homeMain.classList.remove('hidden');
-            stopVideo();
-            stopTmkocTimer();
-            window.scrollTo(0, 0);
-
-            if(searchInput.value.trim() === '') renderHomeGrid(allVideos, false);
-            else executeSearch();
-        }
-
-        // --- Deep API Search Logic --- //
+        // --- Deep API Search Logic (3-Tier) ---
         async function executeSearch() {
-            const query = searchInput.value.trim();
+            const q = document.getElementById('search-input').value.trim().toLowerCase();
             if (!watchMain.classList.contains('hidden')) {
                 watchMain.classList.add('hidden');
                 watchView.style.display = 'none';
@@ -898,311 +549,284 @@
                 stopTmkocTimer();
             }
 
-            if (query === '') {
+            if (q === '') {
                 renderHomeGrid(allVideos, false);
                 return;
             }
 
-            homeView.innerHTML = `<div class="loading-state">Searching archives across all channels...</div>`;
-            loadMoreZone.classList.add('hidden');
-
-            let channelsToSearch = [];
-            if (currentFilterId === null) {
-                channelsToSearch = Object.values(channelsData).filter(c => !c.isTmkoc);
-            } else {
-                channelsToSearch = [channelsData[currentFilterId]];
-            }
-
-            try {
-                const searchPromises = channelsToSearch.map(async (ch) => {
-                    const url = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=25&q=${encodeURIComponent(query)}&type=video&channelId=${ch.id}&key=${API_KEY}`;
-                    const res = await fetch(url);
-                    const data = await res.json();
-                    if (!data.items) return [];
-                    return data.items.map(item => ({
-                        contentDetails: { videoId: item.id.videoId },
-                        snippet: item.snippet
-                    }));
-                });
-
-                const resultsArray = await Promise.all(searchPromises);
-                let combinedResults = resultsArray.flat();
-                combinedResults.sort((a, b) => new Date(b.snippet.publishedAt) - new Date(a.snippet.publishedAt));
-
-                if (combinedResults.length > 0) {
-                    renderHomeGrid(combinedResults, true);
-                } else {
-                    homeView.innerHTML = `<div class="error-state">No videos found for "${query}".</div>`;
-                }
-            } catch (err) {
-                console.error("Search API Error", err);
-                homeView.innerHTML = `<div class="error-state">Search query failed. YouTube API limit reached.</div>`;
-            }
-        }
-
-        searchBtn.addEventListener('click', executeSearch);
-        searchInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') executeSearch(); });
-
-        // --- TMKOC Modal Flow --- //
-        document.getElementById('btn-cancel-tmkoc').addEventListener('click', () => {
-            document.getElementById('tmkoc-warning').classList.add('hidden');
-            pendingVideoLaunch = null;
-        });
-
-        document.getElementById('btn-proceed-tmkoc').addEventListener('click', () => {
-            document.getElementById('tmkoc-warning').classList.add('hidden');
-            if (pendingVideoLaunch) {
-                executeWatchView(pendingVideoLaunch.videoId, pendingVideoLaunch.activeItem);
-                pendingVideoLaunch = null;
-            }
-        });
-
-        // --- API Data Fetching --- //
-        async function fetchAllChannelsData() {
-            sidebarChannels.innerHTML = ''; 
-
-            const promises = TARGET_CHANNELS.map(async (tc) => {
-                let url = '';
-                if (tc.type === 'handle') {
-                    const cleanHandle = tc.value.startsWith('@') ? tc.value : `@${tc.value}`;
-                    url = `https://youtube.googleapis.com/youtube/v3/channels?part=snippet,contentDetails&forHandle=${cleanHandle}&key=${API_KEY}`;
-                } else {
-                    url = `https://youtube.googleapis.com/youtube/v3/channels?part=snippet,contentDetails&id=${tc.value}&key=${API_KEY}`;
-                }
-                
-                try {
-                    let response = await fetch(url);
-                    let data = await response.json();
-                    
-                    if ((!data.items || data.items.length === 0) && tc.type === 'handle') {
-                        let searchUrl = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(tc.value)}&type=channel&maxResults=1&key=${API_KEY}`;
-                        let searchRes = await fetch(searchUrl);
-                        let searchData = await searchRes.json();
-                        if (searchData.items && searchData.items.length > 0) {
-                            const cid = searchData.items[0].snippet.channelId;
-                            let idUrl = `https://youtube.googleapis.com/youtube/v3/channels?part=snippet,contentDetails&id=${cid}&key=${API_KEY}`;
-                            let idRes = await fetch(idUrl);
-                            data = await idRes.json();
-                        }
-                    }
-
-                    if (data.items && data.items.length > 0) {
-                        const channel = data.items[0];
-                        channelsData[channel.id] = {
-                            id: channel.id,
-                            title: channel.snippet.title,
-                            avatarUrl: channel.snippet.thumbnails.default.url,
-                            uploadsPlaylistId: channel.contentDetails.relatedPlaylists.uploads,
-                            isTmkoc: tc.isTmkoc,
-                            nextPageToken: '' 
-                        };
-
-                        const avatar = `<img src="${channel.snippet.thumbnails.default.url}" style="width:24px; height:24px; border-radius:50%;">`;
-                        sidebarChannels.innerHTML += `
-                            <div class="sidebar-item" id="nav-ch-${channel.id}" onclick="filterByChannel('${channel.id}')">
-                                ${avatar} <span style="flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${channel.snippet.title}</span>
-                            </div>
-                        `;
-                    }
-                } catch (err) { console.error("Link Failure:", tc.value, err); }
-            });
-
-            await Promise.all(promises);
-            return Object.keys(channelsData).length > 0;
-        }
-
-        async function fetchAllPlaylistItems() {
-            if (isFetching) return;
-            isFetching = true;
-            
-            if (allVideos.length === 0) homeView.innerHTML = ''; 
-            else btnLoadMore.textContent = "Loading...";
-
-            let newVideosAdded = false;
-
-            const promises = Object.values(channelsData).map(async (channel) => {
-                if (channel.nextPageToken === null) return;
-                const tokenParam = channel.nextPageToken ? `&pageToken=${channel.nextPageToken}` : '';
-                const url = `https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId=${channel.uploadsPlaylistId}&key=${API_KEY}${tokenParam}`;
-                
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) return;
-                    const data = await response.json();
-                    if (data.items) { allVideos = [...allVideos, ...data.items]; newVideosAdded = true; }
-                    channel.nextPageToken = data.nextPageToken || null; 
-                } catch (err) {}
-            });
-
-            await Promise.all(promises);
-
-            if (newVideosAdded) {
-                if (searchInput.value.trim() === '') renderHomeGrid(allVideos, false);
-            }
-
-            isFetching = false;
-        }
-
-        // --- Rendering Engine --- //
-        function renderHomeGrid(items, isSearchResult = false) {
-            homeView.innerHTML = '';
-            let renderedCount = 0;
-            
-            let displayItems = items;
-            if (!isSearchResult && currentFilterId === null) {
-                displayItems = getMixedFeed(items);
-            }
-
-            displayItems.forEach((item, index) => {
-                const videoId = item.contentDetails?.videoId;
-                if(!videoId) return;
-
-                const snippet = item.snippet;
-                const channelId = snippet.channelId;
-                const channel = channelsData[channelId];
-                if (!channel) return;
-
-                if (currentFilterId === null) { if (channel.isTmkoc) return; } 
-                else { if (channelId !== currentFilterId) return; }
-
-                const title = decodeHTML(snippet.title);
-                const thumbnail = snippet.thumbnails.medium ? snippet.thumbnails.medium.url : snippet.thumbnails.default?.url;
-                if (title === "Private video" || title === "Deleted video") return;
-
-                renderedCount++;
-
-                const card = document.createElement('div');
-                card.className = 'video-card';
-                card.style.animationDelay = `${(index % 25) * 0.05}s`; 
-                card.onclick = () => openWatchView(videoId, item);
-                
-                card.innerHTML = `
-                    <div class="thumbnail-container">
-                        <img src="${thumbnail}" alt="Thumbnail">
-                    </div>
-                    <div class="video-details">
-                        <div class="video-title" title="${title}">${title}</div>
-                        <div class="video-meta-grid">
-                            <span>${channel.title.substring(0, 20)}</span>
-                            <span>${formatTimeAgo(snippet.publishedAt)}</span>
-                        </div>
-                    </div>
-                `;
-                homeView.appendChild(card);
-            });
-
-            if (renderedCount === 0 && !isSearchResult) {
-                homeView.innerHTML = `<div class="error-state">No videos available here.</div>`;
-            }
-
-            if (isSearchResult) {
-                loadMoreZone.classList.add('hidden');
-            } else {
-                let showLoadMore = false;
-                if (currentFilterId === null) showLoadMore = Object.values(channelsData).some(ch => !ch.isTmkoc && ch.nextPageToken !== null);
-                else showLoadMore = channelsData[currentFilterId].nextPageToken !== null;
-
-                if (showLoadMore) {
-                    loadMoreZone.classList.remove('hidden');
-                    btnLoadMore.textContent = "Load More";
-                } else {
-                    loadMoreZone.classList.add('hidden');
-                }
-            }
-        }
-
-        function openWatchView(videoId, activeItem) {
-            const channelId = activeItem.snippet.channelId;
-            const channel = channelsData[channelId];
-
-            if (channel && channel.isTmkoc) {
-                const today = new Date().toISOString().split('T')[0];
-                let savedDate = localStorage.getItem('1tube_tmkoc_date');
-                let daily = parseInt(localStorage.getItem('1tube_tmkoc_daily_time') || '0');
-                
-                if (savedDate !== today) daily = 0;
-
-                if (daily >= 3600) { showSystemAlert("ACCESS DENIED", "Daily TMKOC allowance (1 hour) exhausted.<br>Access locked until tomorrow."); return; }
-                if (tmkocSessionTime >= 1800) { showSystemAlert("ACCESS DENIED", "Session allowance (30 mins) exhausted.<br>Restart system to reset session limit."); return; }
-
-                pendingVideoLaunch = { videoId, activeItem };
-                document.getElementById('tmkoc-warning').classList.remove('hidden');
+            // 1. Always check cache first
+            const localResults = allVideos.filter(item => decodeHTML(item.title).toLowerCase().includes(q));
+            if (localResults.length > 0) {
+                renderHomeGrid(localResults, true);
                 return;
             }
 
-            executeWatchView(videoId, activeItem);
+            document.getElementById('home-view').innerHTML = '<div class="loading-state">Deep searching APIs...</div>';
+            
+            let channelsToSearch = currentFilterId ? [channelsData[currentFilterId]] : Object.values(channelsData).filter(c => !c.isTmkoc);
+            let searchResults = [];
+            let sourceUsed = 'youtube';
+
+            try {
+                // 2. Try YouTube API Search
+                const ytPromises = channelsToSearch.map(async (ch) => {
+                    const url = `${YT_BASE}/search?part=snippet&maxResults=20&q=${encodeURIComponent(q)}&type=video&channelId=${ch.id}&key=${API_KEY}`;
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error(res.status === 403 ? "QUOTA" : "HTTP");
+                    const data = await res.json();
+                    if (!data.items) return [];
+                    return data.items.map(item => ({
+                        videoId: item.id.videoId,
+                        title: item.snippet.title,
+                        thumbnail: item.snippet.thumbnails.medium?.url || item.snippet.thumbnails.default?.url,
+                        timestamp: new Date(item.snippet.publishedAt).getTime(),
+                        displayDate: formatTimeAgo(item.snippet.publishedAt),
+                        channelId: item.snippet.channelId,
+                        isTmkoc: ch.isTmkoc
+                    }));
+                });
+                
+                const arrays = await Promise.all(ytPromises);
+                searchResults = arrays.flat();
+
+            } catch (err) {
+                sourceUsed = 'piped';
+                try {
+                    // 3. Try Piped API Search Fallback
+                    const data = await fetchPiped(`/search?q=${encodeURIComponent(q)}&filter=videos`);
+                    if (data.items) {
+                        const validIds = TARGET_CHANNELS.map(c=>c.id);
+                        searchResults = data.items.filter(s => {
+                            const chId = s.uploaderUrl ? s.uploaderUrl.replace('/channel/', '') : '';
+                            return validIds.includes(chId);
+                        }).map(s => {
+                            const chId = s.uploaderUrl.replace('/channel/', '');
+                            return {
+                                videoId: s.url.split('v=')[1] || s.url.split('/').pop(),
+                                title: s.title,
+                                thumbnail: s.thumbnail,
+                                timestamp: s.uploaded || Date.now(),
+                                displayDate: s.uploadedDate || "Recently",
+                                channelId: chId,
+                                isTmkoc: channelsData[chId]?.isTmkoc || false
+                            };
+                        });
+                    }
+                } catch (pipedErr) {
+                    console.error("All Search APIs failed");
+                }
+            }
+
+            if (searchResults.length > 0) {
+                searchResults.sort((a, b) => b.timestamp - a.timestamp);
+                renderHomeGrid(searchResults, true);
+            } else {
+                document.getElementById('home-view').innerHTML = `<div class="error-state">No videos found for "${q}".</div>`;
+            }
         }
 
-        function executeWatchView(videoId, activeItem) {
-            stopTmkocTimer(); 
-            const channelId = activeItem.snippet.channelId;
-            const channel = channelsData[channelId];
-            
-            loadVideoIntoPlayer(videoId);
-            
-            const snippet = activeItem.snippet;
-            document.getElementById('watch-title').textContent = decodeHTML(snippet.title);
-            document.getElementById('watch-channel-name').textContent = channel.title;
-            document.getElementById('watch-avatar').src = channel.avatarUrl;
-            document.getElementById('watch-desc').textContent = snippet.description || "No description provided.";
+        // --- Video Player & Logic --- //
+        function openWatchView(videoId, activeItem, channelInfo) {
+            if (channelInfo && channelInfo.isTmkoc) {
+                const today = new Date().toISOString().split('T')[0];
+                const daily = parseInt(localStorage.getItem('1tube_tmkoc_daily_time') || '0');
+                if (localStorage.getItem('1tube_tmkoc_date') !== today) localStorage.setItem('1tube_tmkoc_daily_time', '0');
+                
+                if (daily >= 3600) { showAlert("ACCESS DENIED", "1 hour daily limit reached."); return; }
+                if (tmkocSessionTime >= 1800) { showAlert("ACCESS DENIED", "30 mins session limit reached. Restart app."); return; }
+                
+                pendingLaunch = { videoId, activeItem, channelInfo };
+                document.getElementById('tm-warn').classList.remove('hidden');
+                return;
+            }
+            executeWatchView(videoId, activeItem, channelInfo);
+        }
 
-            renderWatchSecondary(videoId, channelId);
+        function executeWatchView(videoId, activeItem, channelInfo) {
+            document.getElementById('home-main').classList.add('hidden');
+            document.getElementById('watch-main').classList.remove('hidden');
+            document.getElementById('w-title').textContent = decodeHTML(activeItem.title);
+            document.getElementById('w-name').textContent = channelInfo.title;
+            document.getElementById('w-avatar').src = channelInfo.avatarUrl;
 
-            if (channel && channel.isTmkoc) startTmkocTimer();
+            if (!player) {
+                player = new YT.Player('yt-player', {
+                    videoId: videoId,
+                    playerVars: { autoplay: 1, controls: 0, modestbranding: 1, rel: 0, vq: 'hd2160' },
+                    events: { 
+                        onReady: (e) => {
+                            e.target.setPlaybackQuality('highres');
+                            e.target.playVideo();
+                            updateProgressUI();
+                            if(e.target.isMuted()) { document.getElementById('volume-slider').value = 0; updateMuteIcon(true); }
+                            else { document.getElementById('volume-slider').value = e.target.getVolume(); updateMuteIcon(false); }
+                        },
+                        onStateChange: (e) => {
+                            const p = document.getElementById('pause-overlay');
+                            if(e.data === 1) { 
+                                e.target.setPlaybackQuality('highres');
+                                updatePlayIcon(true);
+                                p.classList.remove('show'); 
+                                clearInterval(progressInt);
+                                progressInt = setInterval(updateProgressUI, 500); 
+                            } else { 
+                                updatePlayIcon(false);
+                                clearInterval(progressInt);
+                                if(e.data === 2 || e.data === 0) p.classList.add('show');
+                                else p.classList.remove('show');
+                            }
+                        }
+                    }
+                });
+            } else {
+                clearInterval(progressInt);
+                document.getElementById('progress-bar').style.width = '0%';
+                updatePlayIcon(false);
+                player.loadVideoById({ videoId: videoId, suggestedQuality: 'highres' });
+            }
 
-            homeMain.classList.add('hidden');
-            watchMain.classList.remove('hidden');
-            watchView.style.display = 'flex';
-            window.scrollTo(0, 0);
+            renderWatchSecondary(videoId, channelInfo.id);
+            if (channelInfo.isTmkoc) startTimer();
+            window.scrollTo(0,0);
         }
 
         function renderWatchSecondary(currentVideoId, currentChannelId) {
-            watchSecondaryList.innerHTML = '';
-            
-            let pool = allVideos.filter(v => v.contentDetails.videoId !== currentVideoId);
+            const wsec = document.getElementById('w-sec');
+            wsec.innerHTML = '';
+            let pool = allVideos.filter(v => v.videoId !== currentVideoId);
             const isWatchingTmkoc = channelsData[currentChannelId]?.isTmkoc;
             
-            if (isWatchingTmkoc) pool = pool.filter(v => channelsData[v.snippet.channelId]?.isTmkoc);
-            else pool = pool.filter(v => !channelsData[v.snippet.channelId]?.isTmkoc);
+            if (isWatchingTmkoc) pool = pool.filter(v => channelsData[v.channelId]?.isTmkoc);
+            else pool = pool.filter(v => !channelsData[v.channelId]?.isTmkoc);
 
             pool.sort(() => 0.5 - Math.random());
-            let recommendations = pool.slice(0, 15);
-
-            recommendations.forEach(item => {
-                const videoId = item.contentDetails.videoId;
-                const snippet = item.snippet;
-                const channel = channelsData[snippet.channelId];
+            pool.slice(0, 15).forEach(item => {
+                const channel = channelsData[item.channelId];
                 if (!channel) return;
-
-                const title = decodeHTML(snippet.title);
-                const thumbnail = snippet.thumbnails.medium ? snippet.thumbnails.medium.url : snippet.thumbnails.default?.url;
-                if (title === "Private video" || title === "Deleted video") return;
-
+                const title = decodeHTML(item.title);
                 const card = document.createElement('div');
                 card.className = 'compact-video-card';
-                card.onclick = () => openWatchView(videoId, item);
-
-                card.innerHTML = `
-                    <div class="compact-thumbnail">
-                        <img src="${thumbnail}" alt="Preview">
-                    </div>
-                    <div class="compact-details">
-                        <div class="compact-title" title="${title}">${title}</div>
-                        <div class="compact-meta">${channel.title.substring(0,15)} • ${formatTimeAgo(snippet.publishedAt)}</div>
-                    </div>
-                `;
-                watchSecondaryList.appendChild(card);
+                card.onclick = () => openWatchView(item.videoId, item, channel);
+                card.innerHTML = `<div class="compact-thumbnail"><img src="${item.thumbnail}"></div><div class="compact-details"><div class="compact-title" title="${title}">${title}</div><div class="compact-meta">${channel.title.substring(0,15)} • ${item.displayDate}</div></div>`;
+                wsec.appendChild(card);
             });
         }
 
-        // Init System
-        async function init() {
-            const success = await fetchAllChannelsData();
-            if (success) await fetchAllPlaylistItems();
-            else homeView.innerHTML = `<div class="error-state">Could not connect to YouTube API. Check API Key limits.</div>`;
+        // --- TMKOC Timer Logic ---
+        function startTimer() {
+            document.getElementById('tmkoc-timer').classList.add('active');
+            tmkocInterrupt = 0;
+            const today = new Date().toISOString().split('T')[0];
+            if (localStorage.getItem('1tube_tmkoc_date') !== today) {
+                localStorage.setItem('1tube_tmkoc_date', today);
+                localStorage.setItem('1tube_tmkoc_daily_time', '0');
+            }
+
+            tmkocInt = setInterval(() => {
+                let daily = parseInt(localStorage.getItem('1tube_tmkoc_daily_time') || '0') + 1;
+                localStorage.setItem('1tube_tmkoc_daily_time', daily);
+                tmkocSession++; tmkocInterrupt++;
+                document.getElementById('tmkoc-timer').textContent = formatTimer(tmkocSession) + " / 30:00";
+                
+                if (daily >= 3600) { stopVideo(); goHome(); showAlert("LIMIT REACHED", "Daily allowance exhausted."); }
+                else if (tmkocSession >= 1800) { stopVideo(); goHome(); showAlert("LIMIT REACHED", "Session allowance exhausted."); }
+                else if (tmkocInterrupt >= 900) { stopVideo(); goHome(); showAlert("ENOUGH", "15 minutes up. Back to work."); }
+            }, 1000);
         }
 
-        document.addEventListener('DOMContentLoaded', init);
+        function stopTmkocTimer() {
+            clearInterval(tmkocInt);
+            document.getElementById('tmkoc-timer').classList.remove('active');
+        }
+
+        // --- Helpers & UI Controls ---
+        function decodeHTML(html) { const txt = document.createElement('textarea'); txt.innerHTML = html || ''; return txt.value; }
+        function formatTimeAgo(isoString) {
+            if (!isoString) return '';
+            const seconds = Math.floor((new Date() - new Date(isoString)) / 1000);
+            let interval = seconds / 31536000; if (interval > 1) return Math.floor(interval) + " years ago";
+            interval = seconds / 2592000; if (interval > 1) return Math.floor(interval) + " months ago";
+            interval = seconds / 86400; if (interval > 1) return Math.floor(interval) + " days ago";
+            interval = seconds / 3600; if (interval > 1) return Math.floor(interval) + " hours ago";
+            return Math.floor(seconds / 60) + " minutes ago";
+        }
+        function formatTimer(totalSeconds) {
+            const h = Math.floor(totalSeconds / 3600);
+            const m = Math.floor((totalSeconds % 3600) / 60);
+            const s = Math.floor(totalSeconds % 60).toString().padStart(2, '0');
+            if (h > 0) return `${h}:${m.toString().padStart(2, '0')}:${s}`;
+            return `${m}:${s}`;
+        }
+        
+        function updateProgressUI() {
+            if (!player || typeof player.getCurrentTime !== 'function') return;
+            const current = player.getCurrentTime() || 0;
+            const duration = player.getDuration() || 0;
+            const pct = duration > 0 ? (current / duration) * 100 : 0;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+            document.getElementById('time-display').textContent = `${formatTimer(current)} / ${formatTimer(duration)}`;
+        }
+
+        function updatePlayIcon(play) { document.getElementById('p-icon').style.display = play ? 'none' : 'block'; document.getElementById('m-icon').nextElementSibling.style.display = play ? 'block' : 'none'; }
+        function updateMuteIcon(mute) { document.getElementById('m-icon').style.display = mute ? 'none' : 'block'; }
+        
+        let osdTimeout = null;
+        function showOSD(text) {
+            const osd = document.getElementById('osd');
+            osd.textContent = text; osd.classList.add('show');
+            clearTimeout(osdTimeout); osdTimeout = setTimeout(() => osd.classList.remove('show'), 800);
+        }
+
+        function togglePlayPause() { player.getPlayerState() === 1 ? player.pauseVideo() : player.playVideo(); }
+        function toggleFullscreen() { const pw = document.getElementById('player-wrapper'); !document.fullscreenElement ? pw.requestFullscreen() : document.exitFullscreen(); }
+        function toggleMute() {
+            if(player.isMuted()) { player.unMute(); document.getElementById('volume-slider').value = player.getVolume(); updateMuteIcon(false); showOSD("Unmuted"); } 
+            else { player.mute(); document.getElementById('volume-slider').value = 0; updateMuteIcon(true); showOSD("Muted"); }
+        }
+        function seekVideo(s) { player.seekTo(player.getCurrentTime() + s, true); showOSD(s > 0 ? `+${s}s` : `${s}s`); updateProgressUI(); }
+        function stopVideo() { if(player && typeof player.stopVideo === 'function') player.stopVideo(); clearInterval(progressInt); updatePlayIcon(false); if (document.fullscreenElement) document.exitFullscreen(); }
+        
+        function goHome() { 
+            document.getElementById('watch-main').classList.add('hidden');
+            document.getElementById('home-main').classList.remove('hidden');
+            stopVideo();
+            stopTmkocTimer();
+            if (document.getElementById('search-input').value.trim() === '') renderHomeGrid(allVideos, false);
+            else executeSearch();
+        }
+        function filter(id) { curFilterId = id; document.getElementById('feed-header-title').textContent = channelsData[id].title; goHome(); }
+
+        function toggleSidebar() { if (window.innerWidth <= 768) document.body.classList.toggle('sidebar-open'); else document.body.classList.toggle('sidebar-closed'); }
+        function updateSidebarActive(channelId) { document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active')); if (channelId === null) document.getElementById('nav-home').classList.add('active'); else { const el = document.getElementById(`nav-ch-${channelId}`); if (el) el.classList.add('active'); } }
+
+        function showAlert(t, m) { document.getElementById('alert-t').textContent = t; document.getElementById('alert-msg').innerHTML = m; document.getElementById('system-alert').classList.remove('hidden'); }
+        function closeAlert() { document.getElementById('system-alert').classList.add('hidden'); }
+        function closeTm() { document.getElementById('tm-warn').classList.add('hidden'); }
+        function startTm() { closeTm(); executeWatchView(pendingLaunch.videoId, pendingLaunch.activeItem, pendingLaunch.channelInfo); }
+        function setQ(q) { player.setPlaybackQuality(q); document.getElementById('q-menu').classList.remove('show'); showOSD(`Quality Requested`); }
+
+        // DOM Listeners
+        document.addEventListener('keydown', e => {
+            if (document.activeElement.tagName === 'INPUT') return;
+            if (!player || document.getElementById('watch-main').classList.contains('hidden')) return;
+            if (e.key === ' ') { e.preventDefault(); togglePlayPause(); }
+            if (e.key === 'f') { e.preventDefault(); toggleFullscreen(); }
+            if (e.key === 'm') { e.preventDefault(); toggleMute(); }
+            if (e.key === 'ArrowRight') { e.preventDefault(); seekVideo(10); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); seekVideo(-10); }
+            if (e.key === 's') { e.preventDefault(); document.getElementById('q-menu').classList.toggle('show'); }
+        });
+
+        document.getElementById('search-btn').onclick = executeSearch;
+        document.getElementById('search-input').onkeyup = e => e.key === 'Enter' && executeSearch();
+        document.getElementById('play-btn').onclick = togglePlayPause;
+        document.getElementById('mute-btn').onclick = toggleMute;
+        document.getElementById('player-shield').onclick = () => { document.getElementById('q-menu').classList.contains('show') ? document.getElementById('q-menu').classList.remove('show') : togglePlayPause(); }
+        document.getElementById('progress-container').onclick = e => { const r = e.currentTarget.getBoundingClientRect(); player.seekTo((e.clientX - r.left) / r.width * player.getDuration(), true); updateProgressUI(); };
+        document.getElementById('volume-slider').oninput = e => { player.setVolume(e.target.value); if(e.target.value > 0 && player.isMuted()) { player.unMute(); updateMuteIcon(false); } else if (e.target.value == 0) { player.mute(); updateMuteIcon(true); } };
+        document.getElementById('sett-btn').onclick = e => { e.stopPropagation(); document.getElementById('q-menu').classList.toggle('show'); };
+        
+        function onYouTubeIframeAPIReady() { init(); }
     </script>
 </body>
 </html>
