@@ -71,7 +71,7 @@
         main { margin-top: var(--header-height); margin-left: var(--sidebar-width); padding: 40px; min-height: calc(100vh - var(--header-height)); transition: margin-left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
         body.sidebar-closed main { margin-left: 0; }
 
-        .feed-header { font-family: var(--font-bold); font-size: 28px; color: var(--text-main); margin-bottom: 20px; letter-spacing: -0.5px; }
+        .feed-header { font-family: var(--font-bold); font-size: 28px; color: var(--text-main); margin-bottom: 30px; letter-spacing: -0.5px; }
 
         #home-view { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
         
@@ -108,6 +108,17 @@
         .controls-row { display: flex; justify-content: space-between; align-items: center; }
         .control-btn { background: transparent; border: none; color: white; cursor: pointer; display: flex; align-items: center; padding: 4px; transition: color 0.2s; }
         .control-btn:hover { color: var(--accent-red); }
+
+        /* Volume Slider Customization */
+        .volume-container { display: flex; align-items: center; gap: 8px; }
+        .volume-slider {
+            width: 0; opacity: 0; transition: all 0.3s ease; cursor: pointer;
+            -webkit-appearance: none; background: rgba(255,255,255,0.2); height: 4px; border-radius: 2px;
+        }
+        .volume-container:hover .volume-slider { width: 80px; opacity: 1; margin-left: 5px; }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 12px; height: 12px; background: var(--text-main); border-radius: 50%;
+        }
 
         .osd-message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 15px 30px; border-radius: 8px; font-size: 24px; font-weight: bold; z-index: 70; opacity: 0; pointer-events: none; }
         .osd-message.show { opacity: 1; }
@@ -214,9 +225,19 @@
                         <div class="progress-container" id="progress-container"><div class="progress-bar" id="progress-bar"></div></div>
                         <div class="controls-row">
                             <div style="display:flex; align-items:center; gap:16px;">
-                                <button class="control-btn" id="play-btn"><svg id="p-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
-                                <button class="control-btn" id="mute-btn"><svg id="m-icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3z"/></svg></button>
-                                <span id="time-display" style="font-size:13px;">0:00 / 0:00</span>
+                                <button class="control-btn" id="play-btn">
+                                    <svg id="p-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    <svg id="p-icon-pause" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                                </button>
+                                
+                                <div class="volume-container">
+                                    <button class="control-btn" id="mute-btn">
+                                        <svg id="m-icon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                        <svg id="m-icon-mute" viewBox="0 0 24 24" style="display:none;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                                    </button>
+                                    <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="100">
+                                </div>
+                                <span id="time-display" style="font-size:13px; font-family: var(--font-main);">0:00 / 0:00</span>
                             </div>
                             <div style="display:flex; align-items:center; gap:16px;">
                                 <button class="control-btn" id="sett-btn"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94s-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87c-0.12,0.21-0.08,0.47,0.12,0.61l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.43-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg></button>
@@ -265,9 +286,9 @@
         ];
         
         const TARGET_CHANNELS = [
-            { id: 'UCp8qsMmzox7vFvUJyPuVr5A', isTmkoc: false }, // Malviya
-            { id: 'UCnSFZ-olBoLGLRUS_3RI2Aw', isTmkoc: true },  // TMKOC
-            { id: 'UC_u628m-O68NIDlRk0K_Sdw', isTmkoc: false }  // Acepe (Using ID directly to save an API call)
+            { type: 'id', value: 'UCp8qsMmzox7vFvUJyPuVr5A', isTmkoc: false }, // Malviya
+            { type: 'id', value: 'UCnSFZ-olBoLGLRUS_3RI2Aw', isTmkoc: true },  // TMKOC
+            { type: 'handle', value: '@meditations.acepe', isTmkoc: false }   // Acepe
         ];
         
         // TTL Settings
@@ -344,7 +365,35 @@
 
             try {
                 // Try YouTube API First
-                const channelIds = TARGET_CHANNELS.map(c => c.id).join(',');
+                const resolvedChannels = [];
+                for (const tc of TARGET_CHANNELS) {
+                    if (tc.type === 'handle') {
+                        const cleanHandle = tc.value.startsWith('@') ? tc.value : `@${tc.value}`;
+                        const hRes = await fetch(`${YT_BASE}/channels?part=id&forHandle=${cleanHandle}&key=${API_KEY}`);
+                        if (hRes.ok && hRes.status !== 403) {
+                            const hData = await hRes.json();
+                            if (hData.items && hData.items.length > 0) {
+                                resolvedChannels.push({ id: hData.items[0].id, tc: tc });
+                                continue;
+                            }
+                        }
+                        const sRes = await fetch(`${YT_BASE}/search?part=snippet&q=${encodeURIComponent(tc.value)}&type=channel&maxResults=1&key=${API_KEY}`);
+                        if (sRes.ok && sRes.status !== 403) {
+                            const sData = await sRes.json();
+                            if (sData.items && sData.items.length > 0) {
+                                resolvedChannels.push({ id: sData.items[0].snippet.channelId, tc: tc });
+                                continue;
+                            }
+                        }
+                        if (hRes.status === 403 || sRes.status === 403) throw new Error("QUOTA");
+                    } else {
+                        resolvedChannels.push({ id: tc.value, tc: tc });
+                    }
+                }
+
+                if (resolvedChannels.length === 0) throw new Error("No channels resolved");
+
+                const channelIds = resolvedChannels.map(c => c.id).join(',');
                 const ytChUrl = `${YT_BASE}/channels?part=snippet,contentDetails&id=${channelIds}&key=${API_KEY}`;
                 const chRes = await fetch(ytChUrl);
                 
@@ -355,11 +404,14 @@
                 
                 const chData = await chRes.json();
                 chData.items.forEach(item => {
-                    const tc = TARGET_CHANNELS.find(c => c.id === item.id);
-                    newChannels[item.id] = {
-                        id: item.id, title: item.snippet.title, avatarUrl: item.snippet.thumbnails.default.url,
-                        uploadsPlaylistId: item.contentDetails.relatedPlaylists.uploads, isTmkoc: tc.isTmkoc
-                    };
+                    const resolved = resolvedChannels.find(c => c.id === item.id);
+                    const tc = resolved ? resolved.tc : null;
+                    if (tc) {
+                        newChannels[item.id] = {
+                            id: item.id, title: item.snippet.title, avatarUrl: item.snippet.thumbnails.default.url,
+                            uploadsPlaylistId: item.contentDetails.relatedPlaylists.uploads, isTmkoc: tc.isTmkoc
+                        };
+                    }
                 });
 
                 // Fetch YT Videos
@@ -392,9 +444,19 @@
                 try {
                     // Fallback to Piped
                     const pipedPromises = TARGET_CHANNELS.map(async (tc) => {
-                        const data = await fetchPiped(`/channel/${tc.id}`);
-                        newChannels[tc.id] = {
-                            id: tc.id, title: data.name, avatarUrl: data.avatarUrl, isTmkoc: tc.isTmkoc
+                        let cid = tc.value;
+                        if (tc.type === 'handle') {
+                            const searchData = await fetchPiped(`/search?q=${encodeURIComponent(tc.value)}&filter=channels`);
+                            if (searchData.items && searchData.items.length > 0) {
+                                cid = searchData.items[0].url.replace('/channel/', '');
+                            } else {
+                                throw new Error("Handle not found on Piped");
+                            }
+                        }
+
+                        const data = await fetchPiped(`/channel/${cid}`);
+                        newChannels[cid] = {
+                            id: cid, title: data.name, avatarUrl: data.avatarUrl, isTmkoc: tc.isTmkoc
                         };
                         
                         if (data.relatedStreams) {
@@ -406,7 +468,7 @@
                                     thumbnail: v.thumbnail,
                                     timestamp: v.uploaded || Date.now(), // Piped gives unix ms
                                     displayDate: v.uploadedDate || "Recently",
-                                    channelId: tc.id,
+                                    channelId: cid,
                                     isTmkoc: tc.isTmkoc
                                 });
                             });
@@ -467,7 +529,7 @@
             let renderedCount = 0;
             
             let displayItems = items;
-            if (!isSearchResult && currentFilterId === null) {
+            if (!isSearchResult && curFilterId === null) {
                 displayItems = getMixedFeed(items);
             }
 
@@ -479,8 +541,8 @@
                 const channel = channelsData[channelId];
                 if (!channel) return;
 
-                if (currentFilterId === null) { if (channel.isTmkoc) return; } 
-                else { if (channelId !== currentFilterId) return; }
+                if (curFilterId === null) { if (channel.isTmkoc) return; } 
+                else { if (channelId !== curFilterId) return; }
 
                 const title = decodeHTML(item.title);
                 if (title === "Private video" || title === "Deleted video") return;
@@ -563,7 +625,7 @@
 
             document.getElementById('home-view').innerHTML = '<div class="loading-state">Deep searching APIs...</div>';
             
-            let channelsToSearch = currentFilterId ? [channelsData[currentFilterId]] : Object.values(channelsData).filter(c => !c.isTmkoc);
+            let channelsToSearch = curFilterId ? [channelsData[curFilterId]] : Object.values(channelsData).filter(c => !c.isTmkoc);
             let searchResults = [];
             let sourceUsed = 'youtube';
 
@@ -595,7 +657,7 @@
                     // 3. Try Piped API Search Fallback
                     const data = await fetchPiped(`/search?q=${encodeURIComponent(q)}&filter=videos`);
                     if (data.items) {
-                        const validIds = TARGET_CHANNELS.map(c=>c.id);
+                        const validIds = Object.values(channelsData).map(c=>c.id);
                         searchResults = data.items.filter(s => {
                             const chId = s.uploaderUrl ? s.uploaderUrl.replace('/channel/', '') : '';
                             return validIds.includes(chId);
@@ -767,8 +829,8 @@
             document.getElementById('time-display').textContent = `${formatTimer(current)} / ${formatTimer(duration)}`;
         }
 
-        function updatePlayIcon(play) { document.getElementById('p-icon').style.display = play ? 'none' : 'block'; document.getElementById('m-icon').nextElementSibling.style.display = play ? 'block' : 'none'; }
-        function updateMuteIcon(mute) { document.getElementById('m-icon').style.display = mute ? 'none' : 'block'; }
+        function updatePlayIcon(play) { document.getElementById('p-icon').style.display = play ? 'none' : 'block'; document.getElementById('p-icon-pause').style.display = play ? 'block' : 'none'; }
+        function updateMuteIcon(mute) { document.getElementById('m-icon').style.display = mute ? 'none' : 'block'; document.getElementById('m-icon-mute').style.display = mute ? 'block' : 'none'; }
         
         let osdTimeout = null;
         function showOSD(text) {
