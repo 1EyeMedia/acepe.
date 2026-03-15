@@ -140,15 +140,57 @@
         
         /* The Shield Overlay - Prevents interacting with the YT iframe natively */
         .player-shield {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 50; cursor: pointer;
+            position: absolute; top: 0; left: 0; width: 100%; height: calc(100% - 50px); z-index: 50; cursor: pointer;
             background: transparent;
         }
 
-        /* Controls Hint Overlay */
-        .controls-hint {
-            position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.7); color: white; padding: 10px 16px; border-radius: 8px; font-size: 13px; z-index: 60; pointer-events: none;
-            opacity: 1; transition: opacity 1s ease 5s; /* Will fade out after 5s */
+        /* --- CUSTOM CONTROLS UI --- */
+        .custom-controls {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 60px;
+            background: linear-gradient(to top, rgba(0,0,0,0.95), rgba(0,0,0,0.6), transparent);
+            display: flex; flex-direction: column; justify-content: flex-end;
+            padding: 0 16px 10px 16px; z-index: 60; opacity: 0; transition: opacity 0.3s ease;
         }
+        .player-wrapper:hover .custom-controls, .custom-controls.active { opacity: 1; }
+        
+        /* Progress Bar */
+        .progress-container {
+            width: 100%; height: 6px; background: rgba(255,255,255,0.2); cursor: pointer;
+            position: relative; margin-bottom: 10px; border-radius: 3px; transition: height 0.2s;
+        }
+        .progress-container:hover { height: 8px; }
+        .progress-bar {
+            height: 100%; background: var(--accent-red); width: 0%; border-radius: 3px;
+            position: relative; pointer-events: none;
+        }
+        .progress-bar::after {
+            content: ''; position: absolute; right: -6px; top: 50%; transform: translateY(-50%) scale(0);
+            width: 12px; height: 12px; background: var(--accent-red); border-radius: 50%; transition: transform 0.2s;
+        }
+        .progress-container:hover .progress-bar::after { transform: translateY(-50%) scale(1); }
+
+        /* Control Buttons Row */
+        .controls-row { display: flex; justify-content: space-between; align-items: center; }
+        .controls-left, .controls-right { display: flex; align-items: center; gap: 16px; }
+        
+        .control-btn {
+            background: transparent; border: none; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; transition: color 0.2s;
+        }
+        .control-btn:hover { color: var(--accent-red); }
+        .control-btn svg { width: 24px; height: 24px; fill: currentColor; }
+
+        /* Volume Slider */
+        .volume-container { display: flex; align-items: center; gap: 8px; }
+        .volume-slider {
+            width: 0; opacity: 0; transition: all 0.3s ease; cursor: pointer;
+            -webkit-appearance: none; background: rgba(255,255,255,0.2); height: 4px; border-radius: 2px;
+        }
+        .volume-container:hover .volume-slider { width: 80px; opacity: 1; margin-left: 5px; }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 12px; height: 12px; background: var(--text-main); border-radius: 50%;
+        }
+
+        .time-display { font-size: 13px; font-weight: 500; font-family: var(--font-main); color: #ddd; margin-left: 8px; }
 
         /* On Screen Display (OSD) for keyboard actions */
         .osd-message {
@@ -161,7 +203,7 @@
 
         /* Custom Quality Menu */
         .quality-menu {
-            position: absolute; bottom: 20px; right: 20px; background: rgba(20,20,20,0.95);
+            position: absolute; bottom: 70px; right: 20px; background: rgba(20,20,20,0.95);
             border: 1px solid var(--border-dim); border-radius: 12px; z-index: 80;
             display: none; flex-direction: column; overflow: hidden; backdrop-filter: blur(10px);
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
@@ -293,11 +335,45 @@
                     <!-- The YouTube API will replace this div with the iframe -->
                     <div id="yt-player"></div>
                     
-                    <!-- The Glass Shield: Blocks ALL clicks to the iframe -->
+                    <!-- The Glass Shield: Blocks ALL clicks to the iframe, but leaves room for bottom controls -->
                     <div class="player-shield" id="player-shield"></div>
 
-                    <!-- Temporary Hint -->
-                    <div class="controls-hint" id="controls-hint">Space: Play | M: Mute | ←/→: Seek | S: Quality | F: Fullscreen</div>
+                    <!-- CUSTOM CONTROLS UI -->
+                    <div class="custom-controls" id="custom-controls">
+                        <!-- Progress Bar -->
+                        <div class="progress-container" id="progress-container">
+                            <div class="progress-bar" id="progress-bar"></div>
+                        </div>
+                        
+                        <!-- Control Buttons -->
+                        <div class="controls-row">
+                            <div class="controls-left">
+                                <button class="control-btn" id="play-pause-btn" title="Play / Pause (Space)">
+                                    <svg id="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    <svg id="icon-pause" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                                </button>
+                                
+                                <div class="volume-container">
+                                    <button class="control-btn" id="mute-btn" title="Mute (m)">
+                                        <svg id="icon-vol-high" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                                        <svg id="icon-vol-mute" viewBox="0 0 24 24" style="display:none;"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+                                    </button>
+                                    <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="100">
+                                </div>
+                                
+                                <span class="time-display" id="time-display">0:00 / 0:00</span>
+                            </div>
+                            
+                            <div class="controls-right">
+                                <button class="control-btn" id="settings-btn" title="Quality Settings (s)">
+                                    <svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.43-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+                                </button>
+                                <button class="control-btn" id="fullscreen-btn" title="Fullscreen (f)">
+                                    <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- On Screen Display (OSD) -->
                     <div id="osd-message" class="osd-message"></div>
@@ -384,17 +460,18 @@
         let allVideos = [];
         let isFetching = false;
         let pendingVideoLaunch = null;
-        let currentFilterId = null; // null = Global Feed, else channel ID
+        let currentFilterId = null; 
 
         // YT Player State
         let player = null;
         let currentVideoId = null;
         let osdTimeout = null;
+        let progressInterval = null;
 
         // TMKOC Restriction State
         let tmkocInterval = null;
-        let tmkocSessionTime = 0; // seconds
-        let tmkocInterruptTime = 0; // seconds
+        let tmkocSessionTime = 0; 
+        let tmkocInterruptTime = 0; 
 
         // DOM
         const homeMain = document.getElementById('home-main');
@@ -413,6 +490,20 @@
         const playerWrapper = document.getElementById('player-wrapper');
         const osdMessage = document.getElementById('osd-message');
         const qualityMenu = document.getElementById('quality-menu');
+        
+        // Custom Controls DOM
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const iconPlay = document.getElementById('icon-play');
+        const iconPause = document.getElementById('icon-pause');
+        const muteBtn = document.getElementById('mute-btn');
+        const iconVolHigh = document.getElementById('icon-vol-high');
+        const iconVolMute = document.getElementById('icon-vol-mute');
+        const volumeSlider = document.getElementById('volume-slider');
+        const timeDisplay = document.getElementById('time-display');
+        const progressBar = document.getElementById('progress-bar');
+        const progressContainer = document.getElementById('progress-container');
+        const settingsBtn = document.getElementById('settings-btn');
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
 
         // Helpers
         function decodeHTML(html) { const txt = document.createElement('textarea'); txt.innerHTML = html || ''; return txt.value; }
@@ -426,8 +517,10 @@
             return Math.floor(seconds / 60) + " minutes ago";
         }
         function formatTimer(totalSeconds) {
-            const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
-            const s = (totalSeconds % 60).toString().padStart(2, '0');
+            const h = Math.floor(totalSeconds / 3600);
+            const m = Math.floor((totalSeconds % 3600) / 60);
+            const s = Math.floor(totalSeconds % 60).toString().padStart(2, '0');
+            if (h > 0) return `${h}:${m.toString().padStart(2, '0')}:${s}`;
             return `${m}:${s}`;
         }
 
@@ -442,7 +535,7 @@
             else { const el = document.getElementById(`nav-ch-${channelId}`); if (el) el.classList.add('active'); }
         }
 
-        // --- Custom Player Controls (Keyboard & Click) --- //
+        // --- Custom Player Controls UI Interaction --- //
 
         function showOSD(text) {
             osdMessage.textContent = text;
@@ -451,60 +544,64 @@
             osdTimeout = setTimeout(() => osdMessage.classList.remove('show'), 800);
         }
 
-        // Space to play/pause, F for fullscreen, Arrows for Seeking, S for quality
+        // UI Event Listeners
+        playPauseBtn.addEventListener('click', togglePlayPause);
+        muteBtn.addEventListener('click', toggleMute);
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+        
+        settingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            qualityMenu.classList.toggle('show');
+        });
+
+        volumeSlider.addEventListener('input', (e) => {
+            const vol = e.target.value;
+            if (player && typeof player.setVolume === 'function') {
+                player.setVolume(vol);
+                if (vol > 0 && player.isMuted()) {
+                    player.unMute();
+                    updateMuteIcon(false);
+                } else if (vol == 0 && !player.isMuted()) {
+                    player.mute();
+                    updateMuteIcon(true);
+                }
+            }
+        });
+
+        progressContainer.addEventListener('click', (e) => {
+            if (!player || typeof player.getDuration !== 'function') return;
+            const rect = progressContainer.getBoundingClientRect();
+            const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+            const newTime = pct * player.getDuration();
+            player.seekTo(newTime, true);
+            updateProgressUI();
+        });
+
+        // Keyboard commands
         document.addEventListener('keydown', (e) => {
-            // Only capture if watching a video and not typing in search
             if (watchMain.classList.contains('hidden') || !player) return;
             if (document.activeElement === searchInput) return;
 
             switch(e.key.toLowerCase()) {
-                case ' ': 
-                    e.preventDefault(); 
-                    togglePlayPause(); 
-                    break;
-                case 'f': 
-                    e.preventDefault(); 
-                    toggleFullscreen(); 
-                    break;
-                case 'm': 
-                    e.preventDefault(); 
-                    toggleMute(); 
-                    break;
-                case 'arrowright': 
-                    e.preventDefault(); 
-                    seekVideo(10); 
-                    break;
-                case 'arrowleft': 
-                    e.preventDefault(); 
-                    seekVideo(-10); 
-                    break;
-                case 's':
-                    e.preventDefault();
-                    qualityMenu.classList.toggle('show');
-                    break;
+                case ' ': e.preventDefault(); togglePlayPause(); break;
+                case 'f': e.preventDefault(); toggleFullscreen(); break;
+                case 'm': e.preventDefault(); toggleMute(); break;
+                case 'arrowright': e.preventDefault(); seekVideo(10); break;
+                case 'arrowleft': e.preventDefault(); seekVideo(-10); break;
+                case 's': e.preventDefault(); qualityMenu.classList.toggle('show'); break;
             }
         });
 
-        // Clicking the shield toggles play/pause, closes quality menu if open
         playerShield.addEventListener('click', () => {
-            if (qualityMenu.classList.contains('show')) {
-                qualityMenu.classList.remove('show');
-            } else {
-                togglePlayPause();
-            }
+            if (qualityMenu.classList.contains('show')) qualityMenu.classList.remove('show');
+            else togglePlayPause();
         });
 
-        // Quality Menu Actions
-        document.getElementById('quality-close').addEventListener('click', () => {
-            qualityMenu.classList.remove('show');
-        });
-
+        document.getElementById('quality-close').addEventListener('click', () => qualityMenu.classList.remove('show'));
         document.querySelectorAll('.quality-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const q = e.target.getAttribute('data-quality');
-                if (player && typeof player.setPlaybackQuality === 'function') {
-                    player.setPlaybackQuality(q);
-                }
+                if (player && typeof player.setPlaybackQuality === 'function') player.setPlaybackQuality(q);
                 showOSD(`Requested: ${e.target.textContent.replace('Force ', '')}`);
                 qualityMenu.classList.remove('show');
             });
@@ -516,9 +613,19 @@
             if (state === 1) { // Playing
                 player.pauseVideo();
                 showOSD("Paused");
-            } else { // Paused, Unstarted, Ended, Video cued
+            } else {
                 player.playVideo();
                 showOSD("Playing");
+            }
+        }
+
+        function updatePlayIcon(isPlaying) {
+            if (isPlaying) {
+                iconPlay.style.display = 'none';
+                iconPause.style.display = 'block';
+            } else {
+                iconPlay.style.display = 'block';
+                iconPause.style.display = 'none';
             }
         }
 
@@ -526,10 +633,24 @@
             if (!player || typeof player.isMuted !== 'function') return;
             if(player.isMuted()) { 
                 player.unMute(); 
+                volumeSlider.value = player.getVolume();
+                updateMuteIcon(false);
                 showOSD("Unmuted"); 
             } else { 
                 player.mute(); 
+                volumeSlider.value = 0;
+                updateMuteIcon(true);
                 showOSD("Muted"); 
+            }
+        }
+
+        function updateMuteIcon(isMuted) {
+            if (isMuted) {
+                iconVolHigh.style.display = 'none';
+                iconVolMute.style.display = 'block';
+            } else {
+                iconVolHigh.style.display = 'block';
+                iconVolMute.style.display = 'none';
             }
         }
 
@@ -538,6 +659,7 @@
             const curr = player.getCurrentTime();
             player.seekTo(curr + seconds, true);
             showOSD(seconds > 0 ? `+${seconds}s` : `${seconds}s`);
+            updateProgressUI();
         }
 
         function toggleFullscreen() {
@@ -548,6 +670,16 @@
             }
         }
 
+        function updateProgressUI() {
+            if (!player || typeof player.getCurrentTime !== 'function') return;
+            const current = player.getCurrentTime() || 0;
+            const duration = player.getDuration() || 0;
+            const pct = duration > 0 ? (current / duration) * 100 : 0;
+            
+            progressBar.style.width = `${pct}%`;
+            timeDisplay.textContent = `${formatTimer(current)} / ${formatTimer(duration)}`;
+        }
+
         // --- YouTube API Implementation --- //
 
         function onYouTubeIframeAPIReady() {
@@ -555,46 +687,56 @@
         }
 
         function onPlayerReady(event) {
-            // Force maximum quality immediately
             event.target.setPlaybackQuality('highres');
             event.target.playVideo();
+            updateProgressUI();
+            
+            // Sync volume UI with actual player state
+            if(event.target.isMuted()) {
+                volumeSlider.value = 0;
+                updateMuteIcon(true);
+            } else {
+                volumeSlider.value = event.target.getVolume();
+                updateMuteIcon(false);
+            }
         }
 
         function onPlayerStateChange(event) {
-            // YT aggressively adapts; re-apply max quality if it's buffering/playing
-            if (event.data === YT.PlayerState.BUFFERING || event.data === YT.PlayerState.PLAYING) {
+            if (event.data === YT.PlayerState.PLAYING) {
                 event.target.setPlaybackQuality('highres');
+                updatePlayIcon(true);
+                
+                // Start Progress Loop
+                clearInterval(progressInterval);
+                progressInterval = setInterval(updateProgressUI, 500);
+            } else {
+                updatePlayIcon(false);
+                clearInterval(progressInterval);
             }
         }
 
         function loadVideoIntoPlayer(videoId) {
             currentVideoId = videoId;
-            
-            // Trigger hint
-            const hint = document.getElementById('controls-hint');
-            hint.style.opacity = '1';
-            setTimeout(() => { hint.style.opacity = '0'; }, 5000);
+            clearInterval(progressInterval);
+            progressBar.style.width = '0%';
+            timeDisplay.textContent = '0:00 / 0:00';
+            updatePlayIcon(false);
 
             if (player) {
-                // If player exists, load new video
-                player.loadVideoById({
-                    videoId: videoId,
-                    suggestedQuality: 'highres' // Force max quality
-                });
+                player.loadVideoById({ videoId: videoId, suggestedQuality: 'highres' });
             } else {
-                // Spawn new player instance (Controls hard disabled)
                 player = new YT.Player('yt-player', {
                     videoId: videoId,
                     playerVars: {
                         'autoplay': 1,
-                        'controls': 0,        // Hide all native controls
-                        'disablekb': 1,       // Disable native YT keyboard shortcuts
-                        'fs': 0,              // Disable native fullscreen button
-                        'modestbranding': 1,  // Hide YT Logo
-                        'rel': 0,             // No related videos at end
-                        'iv_load_policy': 3,  // Hide annotations
+                        'controls': 0,        
+                        'disablekb': 1,       
+                        'fs': 0,              
+                        'modestbranding': 1,  
+                        'rel': 0,             
+                        'iv_load_policy': 3,  
                         'playsinline': 1,
-                        'vq': 'hd2160'        // Request 4K/highest resolution via params
+                        'vq': 'hd2160'        
                     },
                     events: {
                         'onReady': onPlayerReady,
@@ -607,6 +749,8 @@
         function stopVideo() {
             if (player && typeof player.stopVideo === 'function') {
                 player.stopVideo();
+                clearInterval(progressInterval);
+                updatePlayIcon(false);
             }
             if (document.fullscreenElement) {
                 document.exitFullscreen();
@@ -619,19 +763,16 @@
             const malviyaId = 'UCp8qsMmzox7vFvUJyPuVr5A';
             const grouped = {};
             
-            // Group by channel ID
             videosToMix.forEach(v => {
                 const cid = v.snippet.channelId;
                 if (!grouped[cid]) grouped[cid] = [];
                 grouped[cid].push(v);
             });
             
-            // Sort each group internally by date (newest first)
             Object.keys(grouped).forEach(k => {
                 grouped[k].sort((a, b) => new Date(b.snippet.publishedAt) - new Date(a.snippet.publishedAt));
             });
 
-            // Set priority order: Malviya first, then the rest
             const orderedKeys = Object.keys(grouped).sort((a, b) => {
                 if(a === malviyaId) return -1;
                 if(b === malviyaId) return 1;
@@ -642,7 +783,6 @@
             let hasMore = true;
             let index = 0;
             
-            // Round-robin selection
             while(hasMore) {
                 hasMore = false;
                 for(let key of orderedKeys) {
@@ -705,10 +845,9 @@
                 localStorage.setItem('1tube_tmkoc_daily_time', dailyTime);
                 tmkocTimerBadge.textContent = `${formatTimer(tmkocSessionTime)} / 30:00`;
 
-                // Hard Limits
                 if (dailyTime >= 3600) triggerTmkocHardBlock("Daily allowance (1 hour) exhausted.<br>Access locked until tomorrow.");
                 else if (tmkocSessionTime >= 1800) triggerTmkocHardBlock("Session allowance (30 mins) exhausted.<br>You must restart to reset the session.");
-                else if (tmkocInterruptTime >= 900) triggerTmkocFrustration(); // 15 min frustrate
+                else if (tmkocInterruptTime >= 900) triggerTmkocFrustration(); 
             }, 1000);
         }
 
@@ -767,7 +906,6 @@
             homeView.innerHTML = `<div class="loading-state">Searching archives across all channels...</div>`;
             loadMoreZone.classList.add('hidden');
 
-            // Figure out which channels to search
             let channelsToSearch = [];
             if (currentFilterId === null) {
                 channelsToSearch = Object.values(channelsData).filter(c => !c.isTmkoc);
@@ -910,7 +1048,6 @@
             homeView.innerHTML = '';
             let renderedCount = 0;
             
-            // Get the display items based on state (mix if it's the global feed)
             let displayItems = items;
             if (!isSearchResult && currentFilterId === null) {
                 displayItems = getMixedFeed(items);
@@ -925,7 +1062,6 @@
                 const channel = channelsData[channelId];
                 if (!channel) return;
 
-                // Hide TMKOC from global feed
                 if (currentFilterId === null) { if (channel.isTmkoc) return; } 
                 else { if (channelId !== currentFilterId) return; }
 
