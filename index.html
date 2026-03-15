@@ -144,11 +144,43 @@
             background: transparent;
         }
 
-        /* Controls Hint Overlay (Fades out) */
+        /* Controls Hint Overlay */
         .controls-hint {
             position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.7); color: white; padding: 10px 16px; border-radius: 8px; font-size: 13px; z-index: 60; pointer-events: none;
-            opacity: 1; transition: opacity 1s ease 3s; /* Will fade out after 3s in JS */
+            opacity: 1; transition: opacity 1s ease 5s; /* Will fade out after 5s */
         }
+
+        /* On Screen Display (OSD) for keyboard actions */
+        .osd-message {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.8); color: white; padding: 15px 30px; border-radius: 8px;
+            font-size: 24px; font-weight: bold; font-family: var(--font-bold);
+            z-index: 70; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+        }
+        .osd-message.show { opacity: 1; transition: none; }
+
+        /* Custom Quality Menu */
+        .quality-menu {
+            position: absolute; bottom: 20px; right: 20px; background: rgba(20,20,20,0.95);
+            border: 1px solid var(--border-dim); border-radius: 12px; z-index: 80;
+            display: none; flex-direction: column; overflow: hidden; backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+        .quality-menu.show { display: flex; }
+        .quality-btn {
+            background: transparent; border: none; color: white; padding: 12px 24px;
+            font-family: var(--font-main); font-size: 14px; text-align: left; cursor: pointer;
+            transition: var(--transition-smooth); border-bottom: 1px solid var(--border-dim);
+        }
+        .quality-btn:hover { background: var(--accent-red); }
+        .quality-btn:last-child { border-bottom: none; }
+        .quality-menu-header {
+            padding: 12px 24px; font-weight: bold; background: #000; color: var(--accent-red);
+            font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--border-dim);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .quality-menu-close { cursor: pointer; color: white; font-size: 16px; }
+        .quality-menu-close:hover { color: var(--accent-red); }
         
         .timer-badge { position: absolute; top: 20px; right: 20px; background: var(--accent-red); color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: bold; font-family: var(--font-bold); z-index: 60; display: none; box-shadow: 0 0 20px rgba(255,0,0,0.5); }
         .timer-badge.active { display: block; }
@@ -265,7 +297,23 @@
                     <div class="player-shield" id="player-shield"></div>
 
                     <!-- Temporary Hint -->
-                    <div class="controls-hint" id="controls-hint">Space: Play/Pause | F: Fullscreen</div>
+                    <div class="controls-hint" id="controls-hint">Space: Play | M: Mute | ←/→: Seek | S: Quality | F: Fullscreen</div>
+
+                    <!-- On Screen Display (OSD) -->
+                    <div id="osd-message" class="osd-message"></div>
+
+                    <!-- Custom Quality Menu -->
+                    <div id="quality-menu" class="quality-menu">
+                        <div class="quality-menu-header">
+                            <span>Set Quality</span>
+                            <span class="quality-menu-close" id="quality-close">✕</span>
+                        </div>
+                        <button class="quality-btn" data-quality="highres">Force 2160p / Highest</button>
+                        <button class="quality-btn" data-quality="hd1440">Force 1440p (HD)</button>
+                        <button class="quality-btn" data-quality="hd1080">Force 1080p (HD)</button>
+                        <button class="quality-btn" data-quality="hd720">Force 720p</button>
+                        <button class="quality-btn" data-quality="default">Auto</button>
+                    </div>
                 </div>
                 <h1 class="watch-title" id="watch-title">Loading...</h1>
                 
@@ -341,6 +389,7 @@
         // YT Player State
         let player = null;
         let currentVideoId = null;
+        let osdTimeout = null;
 
         // TMKOC Restriction State
         let tmkocInterval = null;
@@ -362,6 +411,8 @@
         const tmkocTimerBadge = document.getElementById('tmkoc-timer');
         const playerShield = document.getElementById('player-shield');
         const playerWrapper = document.getElementById('player-wrapper');
+        const osdMessage = document.getElementById('osd-message');
+        const qualityMenu = document.getElementById('quality-menu');
 
         // Helpers
         function decodeHTML(html) { const txt = document.createElement('textarea'); txt.innerHTML = html || ''; return txt.value; }
@@ -393,24 +444,70 @@
 
         // --- Custom Player Controls (Keyboard & Click) --- //
 
-        // Space to play/pause, F for fullscreen
+        function showOSD(text) {
+            osdMessage.textContent = text;
+            osdMessage.classList.add('show');
+            clearTimeout(osdTimeout);
+            osdTimeout = setTimeout(() => osdMessage.classList.remove('show'), 800);
+        }
+
+        // Space to play/pause, F for fullscreen, Arrows for Seeking, S for quality
         document.addEventListener('keydown', (e) => {
             // Only capture if watching a video and not typing in search
             if (watchMain.classList.contains('hidden') || !player) return;
             if (document.activeElement === searchInput) return;
 
-            if (e.key === ' ') {
-                e.preventDefault();
-                togglePlayPause();
-            } else if (e.key.toLowerCase() === 'f') {
-                e.preventDefault();
-                toggleFullscreen();
+            switch(e.key.toLowerCase()) {
+                case ' ': 
+                    e.preventDefault(); 
+                    togglePlayPause(); 
+                    break;
+                case 'f': 
+                    e.preventDefault(); 
+                    toggleFullscreen(); 
+                    break;
+                case 'm': 
+                    e.preventDefault(); 
+                    toggleMute(); 
+                    break;
+                case 'arrowright': 
+                    e.preventDefault(); 
+                    seekVideo(10); 
+                    break;
+                case 'arrowleft': 
+                    e.preventDefault(); 
+                    seekVideo(-10); 
+                    break;
+                case 's':
+                    e.preventDefault();
+                    qualityMenu.classList.toggle('show');
+                    break;
             }
         });
 
-        // Clicking the shield toggles play/pause
+        // Clicking the shield toggles play/pause, closes quality menu if open
         playerShield.addEventListener('click', () => {
-            togglePlayPause();
+            if (qualityMenu.classList.contains('show')) {
+                qualityMenu.classList.remove('show');
+            } else {
+                togglePlayPause();
+            }
+        });
+
+        // Quality Menu Actions
+        document.getElementById('quality-close').addEventListener('click', () => {
+            qualityMenu.classList.remove('show');
+        });
+
+        document.querySelectorAll('.quality-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const q = e.target.getAttribute('data-quality');
+                if (player && typeof player.setPlaybackQuality === 'function') {
+                    player.setPlaybackQuality(q);
+                }
+                showOSD(`Requested: ${e.target.textContent.replace('Force ', '')}`);
+                qualityMenu.classList.remove('show');
+            });
         });
 
         function togglePlayPause() {
@@ -418,9 +515,29 @@
             const state = player.getPlayerState();
             if (state === 1) { // Playing
                 player.pauseVideo();
+                showOSD("Paused");
             } else { // Paused, Unstarted, Ended, Video cued
                 player.playVideo();
+                showOSD("Playing");
             }
+        }
+
+        function toggleMute() {
+            if (!player || typeof player.isMuted !== 'function') return;
+            if(player.isMuted()) { 
+                player.unMute(); 
+                showOSD("Unmuted"); 
+            } else { 
+                player.mute(); 
+                showOSD("Muted"); 
+            }
+        }
+
+        function seekVideo(seconds) {
+            if (!player || typeof player.getCurrentTime !== 'function') return;
+            const curr = player.getCurrentTime();
+            player.seekTo(curr + seconds, true);
+            showOSD(seconds > 0 ? `+${seconds}s` : `${seconds}s`);
         }
 
         function toggleFullscreen() {
@@ -433,19 +550,18 @@
 
         // --- YouTube API Implementation --- //
 
-        // Called automatically by the YT Iframe API script when it loads
         function onYouTubeIframeAPIReady() {
             // Ready to spawn player when needed
         }
 
         function onPlayerReady(event) {
-            // Force maximum quality
+            // Force maximum quality immediately
             event.target.setPlaybackQuality('highres');
             event.target.playVideo();
         }
 
         function onPlayerStateChange(event) {
-            // If buffering or playing, try forcing highest quality again (YT adapts aggressively)
+            // YT aggressively adapts; re-apply max quality if it's buffering/playing
             if (event.data === YT.PlayerState.BUFFERING || event.data === YT.PlayerState.PLAYING) {
                 event.target.setPlaybackQuality('highres');
             }
@@ -454,32 +570,31 @@
         function loadVideoIntoPlayer(videoId) {
             currentVideoId = videoId;
             
-            // Show hint for a few seconds
+            // Trigger hint
             const hint = document.getElementById('controls-hint');
             hint.style.opacity = '1';
-            setTimeout(() => { hint.style.opacity = '0'; }, 3000);
+            setTimeout(() => { hint.style.opacity = '0'; }, 5000);
 
             if (player) {
-                // If player exists, just load new video
+                // If player exists, load new video
                 player.loadVideoById({
                     videoId: videoId,
                     suggestedQuality: 'highres' // Force max quality
                 });
             } else {
-                // Spawn new player instance
-                // We pass parameters to kill native controls entirely
+                // Spawn new player instance (Controls hard disabled)
                 player = new YT.Player('yt-player', {
                     videoId: videoId,
                     playerVars: {
                         'autoplay': 1,
-                        'controls': 0,        // Hide all bottom bar controls
+                        'controls': 0,        // Hide all native controls
                         'disablekb': 1,       // Disable native YT keyboard shortcuts
                         'fs': 0,              // Disable native fullscreen button
                         'modestbranding': 1,  // Hide YT Logo
                         'rel': 0,             // No related videos at end
                         'iv_load_policy': 3,  // Hide annotations
                         'playsinline': 1,
-                        'vq': 'hd2160'        // Request 4K/highest resolution
+                        'vq': 'hd2160'        // Request 4K/highest resolution via params
                     },
                     events: {
                         'onReady': onPlayerReady,
@@ -496,6 +611,49 @@
             if (document.fullscreenElement) {
                 document.exitFullscreen();
             }
+            qualityMenu.classList.remove('show');
+        }
+
+        // --- Interleaved Feed Logic --- //
+        function getMixedFeed(videosToMix) {
+            const malviyaId = 'UCp8qsMmzox7vFvUJyPuVr5A';
+            const grouped = {};
+            
+            // Group by channel ID
+            videosToMix.forEach(v => {
+                const cid = v.snippet.channelId;
+                if (!grouped[cid]) grouped[cid] = [];
+                grouped[cid].push(v);
+            });
+            
+            // Sort each group internally by date (newest first)
+            Object.keys(grouped).forEach(k => {
+                grouped[k].sort((a, b) => new Date(b.snippet.publishedAt) - new Date(a.snippet.publishedAt));
+            });
+
+            // Set priority order: Malviya first, then the rest
+            const orderedKeys = Object.keys(grouped).sort((a, b) => {
+                if(a === malviyaId) return -1;
+                if(b === malviyaId) return 1;
+                return 0; 
+            });
+
+            const mixed = [];
+            let hasMore = true;
+            let index = 0;
+            
+            // Round-robin selection
+            while(hasMore) {
+                hasMore = false;
+                for(let key of orderedKeys) {
+                    if (grouped[key] && index < grouped[key].length) {
+                        mixed.push(grouped[key][index]);
+                        hasMore = true;
+                    }
+                }
+                index++;
+            }
+            return mixed;
         }
 
         // --- TMKOC Restriction Logic --- //
@@ -741,7 +899,6 @@
             await Promise.all(promises);
 
             if (newVideosAdded) {
-                allVideos.sort((a, b) => new Date(b.snippet.publishedAt) - new Date(a.snippet.publishedAt));
                 if (searchInput.value.trim() === '') renderHomeGrid(allVideos, false);
             }
 
@@ -752,8 +909,14 @@
         function renderHomeGrid(items, isSearchResult = false) {
             homeView.innerHTML = '';
             let renderedCount = 0;
+            
+            // Get the display items based on state (mix if it's the global feed)
+            let displayItems = items;
+            if (!isSearchResult && currentFilterId === null) {
+                displayItems = getMixedFeed(items);
+            }
 
-            items.forEach((item, index) => {
+            displayItems.forEach((item, index) => {
                 const videoId = item.contentDetails?.videoId;
                 if(!videoId) return;
 
@@ -774,7 +937,6 @@
 
                 const card = document.createElement('div');
                 card.className = 'video-card';
-                // Staggered animation delay
                 card.style.animationDelay = `${(index % 25) * 0.05}s`; 
                 card.onclick = () => openWatchView(videoId, item);
                 
@@ -818,7 +980,6 @@
             const channel = channelsData[channelId];
 
             if (channel && channel.isTmkoc) {
-                // Hard Limits Check BEFORE showing eating prompt
                 const today = new Date().toISOString().split('T')[0];
                 let savedDate = localStorage.getItem('1tube_tmkoc_date');
                 let daily = parseInt(localStorage.getItem('1tube_tmkoc_daily_time') || '0');
@@ -841,7 +1002,6 @@
             const channelId = activeItem.snippet.channelId;
             const channel = channelsData[channelId];
             
-            // Invoke new YT Player logic
             loadVideoIntoPlayer(videoId);
             
             const snippet = activeItem.snippet;
