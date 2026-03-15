@@ -282,10 +282,38 @@ main.sb-open{margin-left:var(--sb-open)}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
     </div>
     <div class="modal-title">Access Restricted</div>
-    <div class="modal-body"><strong>This is a TMKOC entertainment file.</strong><br><br>Protocol forbids access unless you are actively eating. Watching entertainment while not eating violates your focus system.<br><br>Are you actually eating right now?</div>
+    <div class="modal-body"><strong>This is a TMKOC entertainment file.</strong><br><br>Protocol forbids access unless you are actively eating. You get <strong>1 hour per day total</strong>, auto-killed every <strong>15 minutes</strong>. Are you actually eating?</div>
+    <div id="tmkoc-quota-info" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:18px;padding:10px;background:var(--bg3);border-radius:8px;text-align:center"></div>
     <div class="modal-actions">
       <button class="btn-ghost" id="btn-cancel">Abort</button>
-      <button class="btn-danger" id="btn-proceed">I'm eating — override</button>
+      <button class="btn-danger" id="btn-proceed">I'm eating — start timer</button>
+    </div>
+  </div>
+</div>
+
+<div id="tmkoc-kick" class="modal-overlay hidden">
+  <div class="modal" style="border-color:rgba(251,113,133,0.4)">
+    <div class="modal-ico" style="background:rgba(251,113,133,0.12);border-color:rgba(251,113,133,0.3);animation:ipulse 1.2s ease-in-out infinite">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--coral)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </div>
+    <div class="modal-title" style="color:var(--coral)">15 Minutes Done.</div>
+    <div class="modal-body" style="border-color:var(--coral);background:rgba(251,113,133,0.06)"><strong>Kafi ho gaya.</strong> 15 minutes of TMKOC consumed. The system cut you off automatically. Every time you override, the 15-min clock resets and kicks you again.<br><br><span id="kick-quota-text" style="color:var(--muted)"></span></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="kick-go-home">Back to Study</button>
+      <button class="btn-danger" id="kick-override" style="background:linear-gradient(135deg,var(--coral),#f43f5e)">Override (15 min more)</button>
+    </div>
+  </div>
+</div>
+
+<div id="tmkoc-daily-limit" class="modal-overlay hidden">
+  <div class="modal" style="border-color:rgba(244,63,94,0.6)">
+    <div class="modal-ico" style="animation:ipulse 0.8s ease-in-out infinite">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <div class="modal-title">1 Hour. Done.</div>
+    <div class="modal-body"><strong>Daily TMKOC quota exhausted.</strong><br><br>You have consumed your full 1 hour allowance for today. This channel is locked until midnight. There is no override. Close it. Open your notes. Stop.<br><br>Resets at <strong>12:00 AM midnight</strong>.</div>
+    <div class="modal-actions">
+      <button class="btn-danger" id="daily-limit-ok" style="width:100%">Understood — Back to Work</button>
     </div>
   </div>
 </div>
@@ -371,29 +399,175 @@ function filterCh(id){
 }
 
 function search(){
-  const q=searchInp.value.toLowerCase().trim();
+  const raw = searchInp.value.trim();
+  const q   = raw.toLowerCase();
+
   if(!watchMain.classList.contains('hidden')){
     ytPlayer.src='';
     watchMain.classList.add('hidden'); watchMain.style.display='none';
     homeMain.classList.remove('hidden');
   }
-  if(!q){renderGrid(allVids);return}
-  renderGrid(allVids.filter(item=>{
-    const t=decode(item.snippet.title).toLowerCase();
-    return t.includes(q)||(item.snippet.description||'').toLowerCase().includes(q);
-  }));
+
+  if(!q){ renderGrid(allVids); return; }
+
+  const terms = q.split(/\s+/).filter(Boolean);
+
+  // score each video by how many terms match and where
+  const scored = allVids.map(item=>{
+    const title = decode(item.snippet.title).toLowerCase();
+    const desc  = (item.snippet.description||'').toLowerCase();
+    const chName = (chData[item.snippet.channelId]?.title||'').toLowerCase();
+    let score = 0;
+
+    terms.forEach(term=>{
+      // exact title match = highest weight
+      if(title.includes(term))          score += 10;
+      // title starts with term
+      if(title.startsWith(term))        score += 5;
+      // channel name match
+      if(chName.includes(term))         score += 4;
+      // description match
+      if(desc.includes(term))           score += 2;
+      // word boundary match in title
+      const wordRe = new RegExp('\\b'+term);
+      if(wordRe.test(title))            score += 3;
+    });
+
+    // bonus: all terms present in title
+    if(terms.every(t=>title.includes(t))) score += 15;
+
+    return { item, score };
+  }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).map(x=>x.item);
+
+  // update feed header to show search context
+  feedTitle.textContent = scored.length + ' results';
+  feedTag.textContent   = 'searching across all channels for "' + raw + '"';
+
+  renderGrid(scored);
 }
-searchInp.addEventListener('input',()=>setTimeout(search,180));
+
+// restore header when search cleared
+searchInp.addEventListener('input',()=>{
+  if(!searchInp.value.trim()){
+    if(filter===null){ feedTitle.textContent='Global Feed'; feedTag.textContent='all cleared channels · no distractions'; }
+    else { const ch=chData[filter]; feedTitle.textContent=ch?.title||''; feedTag.textContent=(ch?.title||'')+' · filtered view'; }
+  }
+  setTimeout(search,200);
+});
 searchInp.addEventListener('keyup',e=>{if(e.key==='Enter')search()});
 
-/* ── MODAL ── */
+/* ── TMKOC TIME SYSTEM ── */
+const TMKOC_DAILY_LIMIT = 60 * 60 * 1000;   // 1 hour in ms
+const TMKOC_KICK_INTERVAL = 15 * 60 * 1000; // 15 min in ms
+
+function getTodayKey(){ return 'tmkoc_used_' + new Date().toDateString(); }
+function getTmkocUsed(){ return parseInt(localStorage.getItem(getTodayKey())||'0'); }
+function addTmkocTime(ms){ localStorage.setItem(getTodayKey(), getTmkocUsed() + ms); }
+function isDailyLimitHit(){ return getTmkocUsed() >= TMKOC_DAILY_LIMIT; }
+function fmtMs(ms){
+  const tot = Math.max(0, ms);
+  const m = Math.floor(tot/60000), s = Math.floor((tot%60000)/1000);
+  return m+'m '+s+'s';
+}
+function remainingToday(){ return Math.max(0, TMKOC_DAILY_LIMIT - getTmkocUsed()); }
+
+let tmkocKickTimer   = null;
+let tmkocUsageTimer  = null;
+let tmkocSessionStart = null;
+let kickCountdown    = null;
+let kickSecondsLeft  = 0;
+
+function startTmkocTimers(){
+  tmkocSessionStart = Date.now();
+
+  // usage tick — add 1s every second to localStorage
+  tmkocUsageTimer = setInterval(()=>{
+    addTmkocTime(1000);
+    if(isDailyLimitHit()){
+      clearTmkocTimers();
+      stopTmkocVideo();
+      showDailyLimit();
+    }
+  }, 1000);
+
+  // 15-min auto kick
+  tmkocKickTimer = setTimeout(()=>{
+    clearTmkocTimers();
+    stopTmkocVideo();
+    showKickModal();
+  }, TMKOC_KICK_INTERVAL);
+}
+
+function clearTmkocTimers(){
+  if(tmkocKickTimer)  clearTimeout(tmkocKickTimer);
+  if(tmkocUsageTimer) clearInterval(tmkocUsageTimer);
+  if(kickCountdown)   clearInterval(kickCountdown);
+  tmkocKickTimer = tmkocUsageTimer = kickCountdown = null;
+}
+
+function stopTmkocVideo(){
+  ytPlayer.src='';
+  watchMain.classList.add('hidden'); watchMain.style.display='none';
+  homeMain.classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showKickModal(){
+  const rem = remainingToday();
+  document.getElementById('kick-quota-text').textContent =
+    'Daily remaining: '+fmtMs(rem)+' of 1 hour. Use it wisely.';
+  document.getElementById('tmkoc-kick').classList.remove('hidden');
+}
+
+function showDailyLimit(){
+  document.getElementById('tmkoc-daily-limit').classList.remove('hidden');
+}
+
+function updateQuotaInfo(){
+  const used = getTmkocUsed();
+  const rem  = Math.max(0, TMKOC_DAILY_LIMIT - used);
+  const el   = document.getElementById('tmkoc-quota-info');
+  if(el) el.textContent = 'Used today: '+fmtMs(used)+' · Remaining: '+fmtMs(rem)+' · Resets at midnight';
+}
+
+/* ── MODAL HANDLERS ── */
 document.getElementById('btn-cancel').addEventListener('click',()=>{
   document.getElementById('tmkoc-modal').classList.add('hidden'); pending=null;
 });
 document.getElementById('btn-proceed').addEventListener('click',()=>{
   document.getElementById('tmkoc-modal').classList.add('hidden');
-  if(pending){doWatch(pending.id,pending.item);pending=null}
+  if(pending){
+    if(isDailyLimitHit()){ showDailyLimit(); pending=null; return; }
+    doWatch(pending.id, pending.item, true);
+    pending=null;
+  }
 });
+
+document.getElementById('kick-go-home').addEventListener('click',()=>{
+  document.getElementById('tmkoc-kick').classList.add('hidden');
+  goHome();
+});
+document.getElementById('kick-override').addEventListener('click',()=>{
+  document.getElementById('tmkoc-kick').classList.add('hidden');
+  if(isDailyLimitHit()){ showDailyLimit(); return; }
+  if(pending_kick){
+    doWatch(pending_kick.id, pending_kick.item, true);
+    pending_kick = null;
+  } else {
+    // re-open TMKOC grid so user picks again
+    filterCh(tmkocChannelId());
+  }
+});
+document.getElementById('daily-limit-ok').addEventListener('click',()=>{
+  document.getElementById('tmkoc-daily-limit').classList.add('hidden');
+  goHome();
+});
+
+function tmkocChannelId(){
+  return Object.keys(chData).find(id=>chData[id].isTmkoc)||null;
+}
+
+let pending_kick = null;
 
 /* ── FETCH CHANNELS ── */
 async function fetchChannels(){
@@ -424,24 +598,49 @@ async function fetchChannels(){
   return Object.keys(chData).length>0;
 }
 
-/* ── FETCH VIDEOS ── */
-async function fetchVideos(){
-  if(fetching)return; fetching=true;
-  if(allVids.length>0)btnLoad.innerHTML='<div class="spin" style="width:14px;height:14px;border-width:1.5px"></div> Loading...';
-  await Promise.all(Object.values(chData).map(async ch=>{
-    if(ch.nextPageToken===null)return;
-    const tok=ch.nextPageToken?`&pageToken=${ch.nextPageToken}`:'';
+/* ── FETCH ALL VIDEOS (full library pagination) ── */
+async function fetchAllVideosForChannel(ch){
+  let pageToken = '';
+  let fetched = 0;
+  while(true){
+    const tok = pageToken ? `&pageToken=${pageToken}` : '';
     try{
-      const res=await fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId=${ch.uploadsPlaylistId}&key=${API_KEY}${tok}`);
-      const data=await res.json();
-      if(data.items)allVids=[...allVids,...data.items];
-      ch.nextPageToken=data.nextPageToken||null;
-    }catch(e){console.error(ch.title,e)}
-  }));
+      const res  = await fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId=${ch.uploadsPlaylistId}&key=${API_KEY}${tok}`);
+      const data = await res.json();
+      if(data.error){ console.error(ch.title, data.error.message); break; }
+      if(data.items){ allVids = [...allVids, ...data.items]; fetched += data.items.length; }
+      updateLoadingProgress();
+      if(data.nextPageToken){ pageToken = data.nextPageToken; }
+      else { break; }
+    }catch(e){ console.error(ch.title, e); break; }
+  }
+  return fetched;
+}
+
+function updateLoadingProgress(){
+  const el = document.getElementById('loading-progress');
+  if(el) el.textContent = allVids.length + ' videos loaded...';
+}
+
+async function fetchVideos(){
+  if(fetching) return; fetching = true;
+
+  // show loading state with progress
+  homeView.innerHTML = `<div class="state-box" id="load-state">
+    <div class="spin"></div>
+    <div class="state-text" id="loading-progress">Fetching full library...</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px">This may take a moment for large channels</div>
+  </div>`;
+
+  // fetch ALL videos from ALL channels sequentially to avoid rate limits
+  for(const ch of Object.values(chData)){
+    await fetchAllVideosForChannel(ch);
+  }
+
   allVids.sort((a,b)=>new Date(b.snippet.publishedAt)-new Date(a.snippet.publishedAt));
-  if(!searchInp.value.trim())renderGrid(allVids);
-  fetching=false;
-  btnLoad.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.12"/></svg> Load more`;
+  fetching = false;
+  loadZone.classList.add('hidden'); // no load-more needed, everything is loaded
+  renderGrid(allVids);
 }
 
 /* ── RENDER GRID ── */
@@ -471,10 +670,19 @@ function renderGrid(items){
 /* ── WATCH ── */
 function openWatch(vid,item){
   const ch=chData[item.snippet.channelId];
-  if(ch?.isTmkoc){pending={id:vid,item};document.getElementById('tmkoc-modal').classList.remove('hidden');return}
-  doWatch(vid,item);
+  if(ch?.isTmkoc){
+    if(isDailyLimitHit()){ showDailyLimit(); return; }
+    updateQuotaInfo();
+    pending={id:vid,item};
+    document.getElementById('tmkoc-modal').classList.remove('hidden');
+    return;
+  }
+  doWatch(vid,item,false);
 }
-function doWatch(vid,item){
+function doWatch(vid,item,isTmkoc=false){
+  // stop any running TMKOC timers first
+  clearTmkocTimers();
+
   const snip=item.snippet, ch=chData[snip.channelId];
   const origin=location.origin!=='null'?location.origin:'https://example.com';
   ytPlayer.src=`https://www.youtube.com/embed/${vid}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1&origin=${encodeURIComponent(origin)}`;
@@ -482,7 +690,14 @@ function doWatch(vid,item){
   document.getElementById('watch-ch-name').textContent=ch.title;
   document.getElementById('watch-avatar').src=ch.avatarUrl;
   document.getElementById('watch-desc').textContent=snip.description||'No description.';
-  const pool=allVids.filter(v=>v.contentDetails?.videoId!==vid&&!chData[v.snippet.channelId]?.isTmkoc).sort(()=>.5-Math.random()).slice(0,10);
+
+  // for TMKOC: show only TMKOC in sidebar, non-TMKOC otherwise
+  const pool=allVids.filter(v=>{
+    const vc=chData[v.snippet.channelId];
+    if(!vc||v.contentDetails?.videoId===vid)return false;
+    return isTmkoc ? vc.isTmkoc : !vc.isTmkoc;
+  }).sort(()=>.5-Math.random()).slice(0,10);
+
   const list=document.getElementById('sec-list'); list.innerHTML='';
   pool.forEach((v,i)=>{
     const vd=v.contentDetails?.videoId, vs=v.snippet, vc=chData[vs.channelId];
@@ -494,9 +709,16 @@ function doWatch(vid,item){
     el.innerHTML=`<div class="cthumb"><img src="${vth}" alt="" loading="lazy"></div><div class="cinfo"><div class="ctitle">${vt}</div><div class="cmeta">${vc.title.substring(0,10)} · ${ago(vs.publishedAt)}</div></div>`;
     list.appendChild(el);
   });
+
   homeMain.classList.add('hidden');
   watchMain.style.display='block'; watchMain.classList.remove('hidden');
   window.scrollTo({top:0,behavior:'smooth'});
+
+  // start TMKOC enforcement timers if needed
+  if(isTmkoc){
+    pending_kick = {id:vid,item};
+    startTmkocTimers();
+  }
 }
 
 async function init(){
