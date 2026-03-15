@@ -245,7 +245,7 @@ main.sb-open{margin-left:var(--sb-open)}
     <div class="state-box"><div class="spin"></div><div class="state-text">establishing secure connection...</div></div>
   </div>
   <div id="load-zone" class="load-wrap hidden">
-    <button class="btn-more" id="btn-load" onclick="fetchVideos()">
+    <button class="btn-more" id="btn-load" onclick="loadMoreVideos()">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.12"/></svg>
       Load more
     </button>
@@ -398,9 +398,11 @@ function filterCh(id){
   searchInp.value===''?renderGrid(allVids):search();
 }
 
+let searchDebounce = null;
+let currentSearchQuery = '';
+
 function search(){
   const raw = searchInp.value.trim();
-  const q   = raw.toLowerCase();
 
   if(!watchMain.classList.contains('hidden')){
     ytPlayer.src='';
@@ -408,53 +410,98 @@ function search(){
     homeMain.classList.remove('hidden');
   }
 
-  if(!q){ renderGrid(allVids); return; }
+  if(!raw){
+    currentSearchQuery = '';
+    if(filter===null){ feedTitle.textContent='Global Feed'; feedTag.textContent='all cleared channels · no distractions'; }
+    else{ const ch=chData[filter]; feedTitle.textContent=ch?.title||''; feedTag.textContent=(ch?.title||'')+' · filtered'; }
+    renderGrid(allVids);
+    loadZone.classList.toggle('hidden', !Object.values(chData).some(c=>!c.isTmkoc&&c.homePageToken));
+    return;
+  }
 
-  const terms = q.split(/\s+/).filter(Boolean);
+  currentSearchQuery = raw;
+  feedTitle.textContent = 'Searching...';
+  feedTag.textContent = 'across all channels for "' + raw + '"';
+  loadZone.classList.add('hidden');
+  homeView.innerHTML = `<div class="state-box"><div class="spin"></div><div class="state-text">Searching YouTube across all channels...</div></div>`;
 
-  // score each video by how many terms match and where
-  const scored = allVids.map(item=>{
-    const title = decode(item.snippet.title).toLowerCase();
-    const desc  = (item.snippet.description||'').toLowerCase();
-    const chName = (chData[item.snippet.channelId]?.title||'').toLowerCase();
-    let score = 0;
-
-    terms.forEach(term=>{
-      // exact title match = highest weight
-      if(title.includes(term))          score += 10;
-      // title starts with term
-      if(title.startsWith(term))        score += 5;
-      // channel name match
-      if(chName.includes(term))         score += 4;
-      // description match
-      if(desc.includes(term))           score += 2;
-      // word boundary match in title
-      const wordRe = new RegExp('\\b'+term);
-      if(wordRe.test(title))            score += 3;
-    });
-
-    // bonus: all terms present in title
-    if(terms.every(t=>title.includes(t))) score += 15;
-
-    return { item, score };
-  }).filter(x=>x.score>0).sort((a,b)=>b.score-a.score).map(x=>x.item);
-
-  // update feed header to show search context
-  feedTitle.textContent = scored.length + ' results';
-  feedTag.textContent   = 'searching across all channels for "' + raw + '"';
-
-  renderGrid(scored);
+  doYTSearch(raw);
 }
 
-// restore header when search cleared
-searchInp.addEventListener('input',()=>{
-  if(!searchInp.value.trim()){
-    if(filter===null){ feedTitle.textContent='Global Feed'; feedTag.textContent='all cleared channels · no distractions'; }
-    else { const ch=chData[filter]; feedTitle.textContent=ch?.title||''; feedTag.textContent=(ch?.title||'')+' · filtered view'; }
+async function doYTSearch(query){
+  const q = encodeURIComponent(query);
+  const results = [];
+
+  // search within each channel in parallel using YouTube search API
+  const channelIds = Object.keys(chData).filter(id=>{
+    if(filter !== null) return id === filter;
+    return !chData[id].isTmkoc; // exclude TMKOC from global search
+  });
+
+  await Promise.all(channelIds.map(async cid=>{
+    try{
+      const url = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&channelId=${cid}&q=${q}&type=video&maxResults=25&order=relevance&key=${API_KEY}`;
+      const res  = await fetch(url);
+      const data = await res.json();
+      if(data.items){
+        data.items.forEach(item=>{
+          // convert search result format to match playlistItems format
+          results.push({
+            contentDetails:{ videoId: item.id.videoId },
+            snippet:{
+              title:       item.snippet.title,
+              description: item.snippet.description,
+              publishedAt: item.snippet.publishedAt,
+              channelId:   item.snippet.channelId,
+              thumbnails:  item.snippet.thumbnails
+            }
+          });
+        });
+      }
+    }catch(e){ console.error('search error', e); }
+  }));
+
+  // if query changed while we were fetching, discard
+  if(currentSearchQuery !== query) return;
+
+  feedTitle.textContent = results.length + ' results';
+  feedTag.textContent   = 'across all channels for "' + query + '"';
+
+  if(results.length === 0){
+    homeView.innerHTML = `<div class="state-box"><div style="font-size:28px;opacity:.25">◌</div><div class="state-text">No results found for "${query}"</div></div>`;
+    return;
   }
-  setTimeout(search,200);
+
+  renderSearchResults(results);
+}
+
+function renderSearchResults(items){
+  homeView.innerHTML = ''; let count = 0;
+  items.forEach((item,i)=>{
+    const vid   = item.contentDetails?.videoId;
+    const snip  = item.snippet;
+    const cid   = snip.channelId;
+    const ch    = chData[cid];
+    if(!ch||!vid) return;
+    const title = decode(snip.title);
+    if(title==='Private video'||title==='Deleted video') return;
+    const thumb = snip.thumbnails.medium?.url||snip.thumbnails.default?.url;
+    count++;
+    const card = document.createElement('div');
+    card.className = 'video-card'; card.dataset.color = ch.color;
+    card.style.animationDelay = Math.min(i,26)*30+'ms';
+    card.onclick = ()=>openWatch(vid,item);
+    card.innerHTML=`<div class="tw"><img src="${thumb}" alt="" loading="lazy"><div class="tg"></div><div class="play-ring"><div class="pri"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div></div><div class="ch-pill">${ch.title.substring(0,13)}</div></div><div class="card-body"><div class="card-title">${title}</div><div class="card-foot"><span class="cft">${ch.title.substring(0,12)}</span><div class="cdot"></div><span class="cft">${ago(snip.publishedAt)}</span></div></div>`;
+    homeView.appendChild(card);
+  });
+  if(count===0) homeView.innerHTML=`<div class="state-box"><div style="font-size:28px;opacity:.25">◌</div><div class="state-text">No results found</div></div>`;
+}
+
+searchInp.addEventListener('input',()=>{
+  clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(search, 400);
 });
-searchInp.addEventListener('keyup',e=>{if(e.key==='Enter')search()});
+searchInp.addEventListener('keyup',e=>{ if(e.key==='Enter'){ clearTimeout(searchDebounce); search(); } });
 
 /* ── TMKOC TIME SYSTEM ── */
 const TMKOC_DAILY_LIMIT = 60 * 60 * 1000;   // 1 hour in ms
@@ -598,48 +645,52 @@ async function fetchChannels(){
   return Object.keys(chData).length>0;
 }
 
-/* ── FETCH ALL VIDEOS (full library pagination) ── */
-async function fetchAllVideosForChannel(ch){
-  let pageToken = '';
-  let fetched = 0;
-  while(true){
-    const tok = pageToken ? `&pageToken=${pageToken}` : '';
-    try{
-      const res  = await fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId=${ch.uploadsPlaylistId}&key=${API_KEY}${tok}`);
-      const data = await res.json();
-      if(data.error){ console.error(ch.title, data.error.message); break; }
-      if(data.items){ allVids = [...allVids, ...data.items]; fetched += data.items.length; }
-      updateLoadingProgress();
-      if(data.nextPageToken){ pageToken = data.nextPageToken; }
-      else { break; }
-    }catch(e){ console.error(ch.title, e); break; }
-  }
-  return fetched;
-}
-
-function updateLoadingProgress(){
-  const el = document.getElementById('loading-progress');
-  if(el) el.textContent = allVids.length + ' videos loaded...';
-}
-
+/* ── FETCH LATEST VIDEOS (homepage feed) ── */
 async function fetchVideos(){
   if(fetching) return; fetching = true;
+  allVids = [];
 
-  // show loading state with progress
-  homeView.innerHTML = `<div class="state-box" id="load-state">
-    <div class="spin"></div>
-    <div class="state-text" id="loading-progress">Fetching full library...</div>
-    <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px">This may take a moment for large channels</div>
-  </div>`;
-
-  // fetch ALL videos from ALL channels sequentially to avoid rate limits
-  for(const ch of Object.values(chData)){
-    await fetchAllVideosForChannel(ch);
-  }
+  await Promise.all(Object.values(chData).map(async ch=>{
+    try{
+      const res  = await fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId=${ch.uploadsPlaylistId}&key=${API_KEY}`);
+      const data = await res.json();
+      if(data.items) allVids = [...allVids, ...data.items];
+      ch.homePageToken = data.nextPageToken || null;
+    }catch(e){ console.error(ch.title, e); }
+  }));
 
   allVids.sort((a,b)=>new Date(b.snippet.publishedAt)-new Date(a.snippet.publishedAt));
   fetching = false;
-  loadZone.classList.add('hidden'); // no load-more needed, everything is loaded
+
+  // show load more only if any channel has more pages
+  const hasMore = Object.values(chData).some(c=>!c.isTmkoc && c.homePageToken);
+  loadZone.classList.toggle('hidden', !hasMore);
+  btnLoad.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.12"/></svg> Load more`;
+
+  renderGrid(allVids);
+}
+
+/* ── LOAD MORE (on demand pagination) ── */
+async function loadMoreVideos(){
+  if(fetching) return; fetching = true;
+  btnLoad.innerHTML='<div class="spin" style="width:14px;height:14px;border-width:1.5px;display:inline-block;vertical-align:middle;margin-right:6px"></div> Loading...';
+
+  await Promise.all(Object.values(chData).map(async ch=>{
+    if(!ch.homePageToken) return;
+    try{
+      const res  = await fetch(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&maxResults=50&playlistId=${ch.uploadsPlaylistId}&key=${API_KEY}&pageToken=${ch.homePageToken}`);
+      const data = await res.json();
+      if(data.items) allVids = [...allVids, ...data.items];
+      ch.homePageToken = data.nextPageToken || null;
+    }catch(e){ console.error(ch.title, e); }
+  }));
+
+  allVids.sort((a,b)=>new Date(b.snippet.publishedAt)-new Date(a.snippet.publishedAt));
+  fetching = false;
+
+  const hasMore = Object.values(chData).some(c=>!c.isTmkoc && c.homePageToken);
+  loadZone.classList.toggle('hidden', !hasMore);
+  btnLoad.innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.12"/></svg> Load more`;
   renderGrid(allVids);
 }
 
