@@ -285,7 +285,7 @@ main.sb-open{margin-left:var(--sb-open)}
 .feed-sub-dot{width:4px;height:4px;border-radius:50%;background:var(--red);animation:pulse 3s ease-in-out infinite}
 
 /* ═══ HOME GRID ═══ */
-#home-view{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+#home-view{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
 
 @keyframes cardIn{
   from{opacity:0;transform:translateY(28px) scale(0.95)}
@@ -328,9 +328,9 @@ main.sb-open{margin-left:var(--sb-open)}
 
 .tw{position:relative;width:100%;padding-bottom:56.25%;overflow:hidden;background:#0a0a0f}
 .tw img{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center top;
   transition:transform 0.65s var(--ease),filter 0.45s;
-  filter:brightness(0.8) saturate(0.65);
+  filter:brightness(0.85) saturate(0.7);
 }
 .video-card:hover .tw img{transform:scale(1.09);filter:brightness(1.05) saturate(1.2)}
 
@@ -597,6 +597,24 @@ main.sb-open{margin-left:var(--sb-open)}
   header{padding-left:16px!important}
   #home-view{grid-template-columns:1fr}
 }
+
+/* CUSTOM PLAYER CONTROLS */
+#custom-controls{
+  position:absolute;inset:0;pointer-events:none;z-index:5;
+  display:flex;flex-direction:column;justify-content:flex-end;
+}
+#kb-hint{
+  text-align:center;
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;letter-spacing:0.06em;
+  color:rgba(255,255,255,0.5);
+  padding:10px;
+  background:linear-gradient(to top,rgba(0,0,0,0.7),transparent);
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 0.3s;
+}
+.player-shell:hover #kb-hint{opacity:1}
 </style>
 </head>
 <body>
@@ -664,10 +682,13 @@ main.sb-open{margin-left:var(--sb-open)}
 <main id="watch-main" class="hidden">
   <div class="watch-grid">
     <div>
-      <div class="player-shell">
+      <div class="player-shell" id="player-shell">
         <iframe id="yt-player" src="" title="YouTube video player"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen></iframe>
+        <div id="custom-controls">
+          <div id="kb-hint">SPACE · play/pause &nbsp;·&nbsp; ← → · seek 10s &nbsp;·&nbsp; M · mute</div>
+        </div>
       </div>
       <h1 class="watch-title" id="watch-title">Loading...</h1>
       <div class="watch-meta">
@@ -1149,7 +1170,8 @@ function doWatch(vid,item,isTmkoc=false){
 
   const snip=item.snippet, ch=chData[snip.channelId];
   const origin=location.origin!=='null'?location.origin:'https://example.com';
-  ytPlayer.src=`https://www.youtube.com/embed/${vid}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1&origin=${encodeURIComponent(origin)}&disablekb=0&iv_load_policy=3&cc_load_policy=0&playsinline=1&controls=1&showinfo=0&fs=0`;
+  seekOffset=0; ytPaused=false;
+  ytPlayer.src=`https://www.youtube.com/embed/${vid}?autoplay=1&rel=0&modestbranding=1&enablejsapi=1&origin=${encodeURIComponent(origin)}&controls=0&disablekb=1&iv_load_policy=3&cc_load_policy=0&playsinline=1&showinfo=0&vq=hd2160`;
   document.getElementById('watch-title').textContent=decode(snip.title);
   document.getElementById('watch-ch-name').textContent=ch.title;
   document.getElementById('watch-avatar').src=ch.avatarUrl;
@@ -1177,6 +1199,15 @@ function doWatch(vid,item,isTmkoc=false){
   homeMain.classList.add('hidden');
   watchMain.style.display='block'; watchMain.classList.remove('hidden');
   window.scrollTo({top:0,behavior:'smooth'});
+  // auto fullscreen the player
+  setTimeout(()=>{
+    const shell = document.getElementById('player-shell');
+    if(shell && shell.requestFullscreen){
+      shell.requestFullscreen().catch(()=>{});
+    } else if(shell && shell.webkitRequestFullscreen){
+      shell.webkitRequestFullscreen();
+    }
+  }, 800);
 
   // start TMKOC enforcement timers if needed
   if(isTmkoc){
@@ -1200,6 +1231,84 @@ async function init(){
   if(ok)await fetchVideos();
   else homeView.innerHTML=`<div class="state-box"><div style="font-size:32px;opacity:.25">✕</div><div class="state-text">Connection failed — check API key</div></div>`;
 }
+
+/* ── KEYBOARD CONTROLS via YT IFrame API ── */
+let ytReady = false;
+let ytPaused = false;
+let ytDuration = 0;
+
+window.onYouTubeIframeAPIReady = function(){};
+
+function postToPlayer(action, value){
+  const iframe = document.getElementById('yt-player');
+  if(!iframe || !iframe.contentWindow) return;
+  let msg = {};
+  if(action === 'playVideo')   msg = {event:'command', func:'playVideo', args:[]};
+  if(action === 'pauseVideo')  msg = {event:'command', func:'pauseVideo', args:[]};
+  if(action === 'seekTo')      msg = {event:'command', func:'seekTo', args:[value, true]};
+  if(action === 'getDuration') msg = {event:'command', func:'getDuration', args:[]};
+  iframe.contentWindow.postMessage(JSON.stringify(msg), '*');
+}
+
+document.addEventListener('keydown', e => {
+  // only fire when not typing in search box
+  if(document.activeElement === document.getElementById('search-input')) return;
+  if(watchMain.classList.contains('hidden')) return;
+
+  if(e.code === 'Space'){
+    e.preventDefault();
+    if(ytPaused){ postToPlayer('playVideo'); ytPaused = false; }
+    else { postToPlayer('pauseVideo'); ytPaused = true; }
+    showKeyHint(ytPaused ? '⏸ Paused' : '▶ Playing');
+  }
+  if(e.code === 'ArrowRight'){
+    e.preventDefault();
+    postToPlayer('seekTo', seekOffset + 10);
+    seekOffset += 10;
+    showKeyHint('⏩ +10s');
+  }
+  if(e.code === 'ArrowLeft'){
+    e.preventDefault();
+    postToPlayer('seekTo', Math.max(0, seekOffset - 10));
+    seekOffset = Math.max(0, seekOffset - 10);
+    showKeyHint('⏪ -10s');
+  }
+  if(e.code === 'KeyF'){
+    e.preventDefault();
+    const shell = document.getElementById('player-shell');
+    if(!document.fullscreenElement){ shell.requestFullscreen && shell.requestFullscreen(); }
+    else { document.exitFullscreen && document.exitFullscreen(); }
+    showKeyHint('⛶ Fullscreen');
+  }
+  if(e.code === 'KeyM'){
+    e.preventDefault();
+    postToPlayer(ytMuted ? 'unMute' : 'mute');
+    ytMuted = !ytMuted;
+    showKeyHint(ytMuted ? '🔇 Muted' : '🔊 Unmuted');
+  }
+});
+
+let seekOffset = 0;
+let ytMuted = false;
+let hintTimeout = null;
+
+function showKeyHint(text){
+  let hint = document.getElementById('key-hint-toast');
+  if(!hint){
+    hint = document.createElement('div');
+    hint.id = 'key-hint-toast';
+    hint.style.cssText = 'position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:#fff;font-family:JetBrains Mono,monospace;font-size:14px;font-weight:500;padding:10px 22px;border-radius:8px;z-index:9990;pointer-events:none;transition:opacity 0.3s;border:1px solid rgba(255,45,45,0.3);backdrop-filter:blur(10px)';
+    document.body.appendChild(hint);
+  }
+  hint.textContent = text;
+  hint.style.opacity = '1';
+  clearTimeout(hintTimeout);
+  hintTimeout = setTimeout(()=>{ hint.style.opacity='0'; }, 1200);
+}
+
+// reset seek tracker when new video loads
+const origDoWatch = doWatch;
+
 document.addEventListener('DOMContentLoaded',init);
 </script>
 </body>
