@@ -111,14 +111,9 @@
 
         /* Volume Slider Customization */
         .volume-container { display: flex; align-items: center; gap: 8px; }
-        .volume-slider {
-            width: 0; opacity: 0; transition: all 0.3s ease; cursor: pointer;
-            -webkit-appearance: none; background: rgba(255,255,255,0.2); height: 4px; border-radius: 2px;
-        }
+        .volume-slider { width: 0; opacity: 0; transition: all 0.3s ease; cursor: pointer; -webkit-appearance: none; background: rgba(255,255,255,0.2); height: 4px; border-radius: 2px; }
         .volume-container:hover .volume-slider { width: 80px; opacity: 1; margin-left: 5px; }
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 12px; height: 12px; background: var(--text-main); border-radius: 50%;
-        }
+        .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: var(--text-main); border-radius: 50%; }
 
         .osd-message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.8); color: white; padding: 15px 30px; border-radius: 8px; font-size: 24px; font-weight: bold; z-index: 70; opacity: 0; pointer-events: none; }
         .osd-message.show { opacity: 1; }
@@ -203,7 +198,7 @@
         <div id="sidebar-channels"></div>
         <div class="sidebar-divider"></div>
         <div class="sidebar-item" onclick="forceSync()" style="color: var(--text-muted);">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path></svg> Refresh Sync (Clear Cache)
+            <svg class="icon" viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"></path></svg> Refresh Sync
         </div>
     </aside>
 
@@ -241,16 +236,16 @@
                             </div>
                             <div style="display:flex; align-items:center; gap:16px;">
                                 <button class="control-btn" id="sett-btn"><svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94s-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87c-0.12,0.21-0.08,0.47,0.12,0.61l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.43-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg></button>
-                                <button class="control-btn" onclick="toggleFullscreen()"><svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
+                                <button class="control-btn" id="fullscreen-btn"><svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg></button>
                             </div>
                         </div>
                     </div>
                     <div id="osd" class="osd-message"></div>
                     <div id="q-menu" class="quality-menu">
-                        <button class="quality-btn" onclick="setQ('highres')">2160p (4K)</button>
-                        <button class="quality-btn" onclick="setQ('hd1440')">1440p (HD)</button>
-                        <button class="quality-btn" onclick="setQ('hd1080')">1080p (HD)</button>
-                        <button class="quality-btn" onclick="setQ('hd720')">720p</button>
+                        <button class="quality-btn" data-quality="highres">Force 2160p (4K)</button>
+                        <button class="quality-btn" data-quality="hd1440">Force 1440p (HD)</button>
+                        <button class="quality-btn" data-quality="hd1080">Force 1080p (HD)</button>
+                        <button class="quality-btn" data-quality="hd720">Force 720p</button>
                     </div>
                 </div>
                 <h1 class="watch-title" id="w-title">Loading...</h1>
@@ -266,8 +261,8 @@
         </div>
     </main>
 
-    <div id="system-alert" class="modal-overlay hidden"><div class="modal-content"><h2 id="alert-t" class="modal-title">DENIED</h2><p id="alert-msg" class="modal-text"></p><button onclick="closeAlert()" class="btn-danger">Acknowledge</button></div></div>
-    <div id="tm-warn" class="modal-overlay hidden"><div class="modal-content"><h2 class="modal-title">Food Required</h2><p class="modal-text">TMKOC video detected. Protocol requires active consumption of nutrients.<br><br>30m session / 1h daily / 15m interrupts enabled.</p><div style="display:flex;gap:16px;justify-content:center;"><button onclick="closeTm()" class="btn-action">Cancel</button><button onclick="startTm()" class="btn-danger">I am eating</button></div></div></div>
+    <div id="system-alert" class="modal-overlay hidden"><div class="modal-content"><h2 id="alert-t" class="modal-title">DENIED</h2><p id="alert-msg" class="modal-text"></p><button id="btn-close-alert" class="btn-danger">Acknowledge</button></div></div>
+    <div id="tm-warn" class="modal-overlay hidden"><div class="modal-content"><h2 class="modal-title">Food Required</h2><p class="modal-text">TMKOC video detected. Protocol requires active consumption of nutrients.<br><br>30m session / 1h daily / 15m interrupts enabled.</p><div style="display:flex;gap:16px;justify-content:center;"><button id="btn-cancel-tmkoc" class="btn-action">Cancel</button><button id="btn-proceed-tmkoc" class="btn-danger">I am eating</button></div></div></div>
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
@@ -298,7 +293,135 @@
         // App State
         let channelsData = {};
         let allVideos = [];
-        let player = null, progressInt = null, tmkocInt = null, tmkocSession = 0, tmkocInterrupt = 0, curFilterId = null, pendingLaunch = null;
+        let player = null, progressInt = null, tmkocInt = null, tmkocSession = 0, tmkocInterrupt = 0, currentFilterId = null, pendingLaunch = null;
+
+        // --- Execute immediately upon DOM Loading ---
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            init();
+        });
+
+        // --- Fetch with aggressive Timeout (crucial for Piped stability) ---
+        async function fetchWithTimeout(url, ms = 6000) {
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), ms);
+            try {
+                const res = await fetch(url, { signal: controller.signal });
+                clearTimeout(id);
+                return res;
+            } catch (e) {
+                clearTimeout(id);
+                throw e; // Pass error up to trigger fallback
+            }
+        }
+
+        // --- Event Listener Registration ---
+        function setupEventListeners() {
+            const searchBtn = document.getElementById('search-btn');
+            if (searchBtn) searchBtn.onclick = executeSearch;
+            
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) searchInput.onkeyup = e => e.key === 'Enter' && executeSearch();
+            
+            const playBtn = document.getElementById('play-btn');
+            if (playBtn) playBtn.onclick = togglePlayPause;
+            
+            const muteBtn = document.getElementById('mute-btn');
+            if (muteBtn) muteBtn.onclick = toggleMute;
+            
+            const playerShield = document.getElementById('player-shield');
+            if (playerShield) playerShield.onclick = () => { 
+                const qMenu = document.getElementById('q-menu');
+                if (qMenu && qMenu.classList.contains('show')) {
+                    qMenu.classList.remove('show');
+                } else {
+                    togglePlayPause();
+                }
+            };
+            
+            const progressContainer = document.getElementById('progress-container');
+            if (progressContainer) progressContainer.onclick = e => { 
+                if (!player || typeof player.getDuration !== 'function') return;
+                const r = e.currentTarget.getBoundingClientRect(); 
+                player.seekTo((e.clientX - r.left) / r.width * player.getDuration(), true); 
+                updateProgressUI(); 
+            };
+            
+            const volumeSlider = document.getElementById('volume-slider');
+            if (volumeSlider) volumeSlider.oninput = e => { 
+                if (!player || typeof player.setVolume !== 'function') return;
+                player.setVolume(e.target.value); 
+                if(e.target.value > 0 && player.isMuted()) { 
+                    player.unMute(); 
+                    updateMuteIcon(false); 
+                } else if (e.target.value == 0) { 
+                    player.mute(); 
+                    updateMuteIcon(true); 
+                } 
+            };
+            
+            const settBtn = document.getElementById('sett-btn');
+            if (settBtn) settBtn.onclick = e => { 
+                e.stopPropagation(); 
+                const qMenu = document.getElementById('q-menu');
+                if (qMenu) qMenu.classList.toggle('show'); 
+            };
+
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            if (fullscreenBtn) fullscreenBtn.onclick = toggleFullscreen;
+
+            const btnCancelTmkoc = document.getElementById('btn-cancel-tmkoc');
+            if (btnCancelTmkoc) btnCancelTmkoc.onclick = () => {
+                const warn = document.getElementById('tmkoc-warning');
+                if(warn) warn.classList.add('hidden');
+                pendingLaunch = null;
+            };
+
+            const btnProceedTmkoc = document.getElementById('btn-proceed-tmkoc');
+            if (btnProceedTmkoc) btnProceedTmkoc.onclick = () => {
+                const warn = document.getElementById('tmkoc-warning');
+                if(warn) warn.classList.add('hidden');
+                if (pendingLaunch) {
+                    executeWatchView(pendingLaunch.videoId, pendingLaunch.activeItem, pendingLaunch.channelInfo);
+                    pendingLaunch = null;
+                }
+            };
+
+            const btnCloseAlert = document.getElementById('btn-close-alert');
+            if (btnCloseAlert) btnCloseAlert.onclick = () => {
+                const alertBox = document.getElementById('system-alert');
+                if(alertBox) alertBox.classList.add('hidden');
+            };
+
+            const qBtns = document.querySelectorAll('.quality-btn');
+            qBtns.forEach(btn => {
+                btn.onclick = (e) => {
+                    const q = e.target.getAttribute('data-quality');
+                    if (player && typeof player.setPlaybackQuality === 'function') player.setPlaybackQuality(q);
+                    showOSD(`Quality Requested`);
+                    const qMenu = document.getElementById('q-menu');
+                    if(qMenu) qMenu.classList.remove('show');
+                };
+            });
+        }
+
+        // Global Keyboard Controls
+        document.addEventListener('keydown', e => {
+            if (document.activeElement.tagName === 'INPUT') return;
+            const watchMain = document.getElementById('watch-main');
+            if (!player || (watchMain && watchMain.classList.contains('hidden'))) return;
+            
+            if (e.key === ' ') { e.preventDefault(); togglePlayPause(); }
+            if (e.key === 'f') { e.preventDefault(); toggleFullscreen(); }
+            if (e.key === 'm') { e.preventDefault(); toggleMute(); }
+            if (e.key === 'ArrowRight') { e.preventDefault(); seekVideo(10); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); seekVideo(-10); }
+            if (e.key === 's') { 
+                e.preventDefault(); 
+                const qMenu = document.getElementById('q-menu');
+                if(qMenu) qMenu.classList.toggle('show'); 
+            }
+        });
 
         // --- Caching Logic ---
         function getCache(key, ttl, forceFallback = false) {
@@ -325,14 +448,14 @@
 
         function showApiStatus(message, type) {
             const banner = document.getElementById('api-status-banner');
-            banner.innerHTML = `<div class="status-pill ${type}">${message}</div>`;
+            if(banner) banner.innerHTML = `<div class="status-pill ${type}">${message}</div>`;
         }
 
         // --- Piped Instance Looper ---
         async function fetchPiped(endpoint) {
             for (let i = 0; i < PIPED_INSTANCES.length; i++) {
                 try {
-                    const res = await fetch(PIPED_INSTANCES[i] + endpoint);
+                    const res = await fetchWithTimeout(PIPED_INSTANCES[i] + endpoint, 6000); 
                     if (!res.ok) throw new Error('HTTP ' + res.status);
                     return await res.json();
                 } catch (e) {
@@ -358,7 +481,8 @@
             }
 
             // 2. Cache is missing or expired. Let's do a network sync.
-            document.getElementById('home-view').innerHTML = '<div class="loading-state">Syncing secure feed from Network...</div>';
+            const homeView = document.getElementById('home-view');
+            if(homeView) homeView.innerHTML = '<div class="loading-state">Syncing secure feed from Network...</div>';
             let newChannels = {};
             let newVideos = [];
             let sourceUsed = 'youtube';
@@ -369,33 +493,38 @@
                 for (const tc of TARGET_CHANNELS) {
                     if (tc.type === 'handle') {
                         const cleanHandle = tc.value.startsWith('@') ? tc.value : `@${tc.value}`;
-                        const hRes = await fetch(`${YT_BASE}/channels?part=id&forHandle=${cleanHandle}&key=${API_KEY}`);
-                        if (hRes.ok && hRes.status !== 403) {
-                            const hData = await hRes.json();
-                            if (hData.items && hData.items.length > 0) {
-                                resolvedChannels.push({ id: hData.items[0].id, tc: tc });
-                                continue;
+                        try {
+                            const hRes = await fetchWithTimeout(`${YT_BASE}/channels?part=id&forHandle=${cleanHandle}&key=${API_KEY}`, 5000);
+                            if (hRes.ok && hRes.status !== 403) {
+                                const hData = await hRes.json();
+                                if (hData.items && hData.items.length > 0) {
+                                    resolvedChannels.push({ id: hData.items[0].id, tc: tc });
+                                    continue;
+                                }
                             }
-                        }
-                        const sRes = await fetch(`${YT_BASE}/search?part=snippet&q=${encodeURIComponent(tc.value)}&type=channel&maxResults=1&key=${API_KEY}`);
-                        if (sRes.ok && sRes.status !== 403) {
-                            const sData = await sRes.json();
-                            if (sData.items && sData.items.length > 0) {
-                                resolvedChannels.push({ id: sData.items[0].snippet.channelId, tc: tc });
-                                continue;
+                            const sRes = await fetchWithTimeout(`${YT_BASE}/search?part=snippet&q=${encodeURIComponent(tc.value)}&type=channel&maxResults=1&key=${API_KEY}`, 5000);
+                            if (sRes.ok && sRes.status !== 403) {
+                                const sData = await sRes.json();
+                                if (sData.items && sData.items.length > 0) {
+                                    resolvedChannels.push({ id: sData.items[0].snippet.channelId, tc: tc });
+                                    continue;
+                                }
                             }
+                            if (hRes.status === 403 || sRes.status === 403) throw new Error("QUOTA");
+                        } catch (e) {
+                            if (e.message === "QUOTA") throw e;
+                            console.warn("Failed resolving handle", tc.value);
                         }
-                        if (hRes.status === 403 || sRes.status === 403) throw new Error("QUOTA");
                     } else {
                         resolvedChannels.push({ id: tc.value, tc: tc });
                     }
                 }
 
-                if (resolvedChannels.length === 0) throw new Error("No channels resolved");
+                if (resolvedChannels.length === 0) throw new Error("NO_CHANNELS");
 
                 const channelIds = resolvedChannels.map(c => c.id).join(',');
                 const ytChUrl = `${YT_BASE}/channels?part=snippet,contentDetails&id=${channelIds}&key=${API_KEY}`;
-                const chRes = await fetch(ytChUrl);
+                const chRes = await fetchWithTimeout(ytChUrl, 6000);
                 
                 if (!chRes.ok) {
                     if (chRes.status === 403) throw new Error("QUOTA");
@@ -405,38 +534,41 @@
                 const chData = await chRes.json();
                 chData.items.forEach(item => {
                     const resolved = resolvedChannels.find(c => c.id === item.id);
-                    const tc = resolved ? resolved.tc : null;
-                    if (tc) {
+                    if (resolved && resolved.tc) {
                         newChannels[item.id] = {
                             id: item.id, title: item.snippet.title, avatarUrl: item.snippet.thumbnails.default.url,
-                            uploadsPlaylistId: item.contentDetails.relatedPlaylists.uploads, isTmkoc: tc.isTmkoc
+                            uploadsPlaylistId: item.contentDetails.relatedPlaylists.uploads, isTmkoc: resolved.tc.isTmkoc
                         };
                     }
                 });
 
+                if(Object.keys(newChannels).length === 0) throw new Error("NO_CHANNELS_LOADED");
+
                 // Fetch YT Videos
                 const vidPromises = Object.values(newChannels).map(async (ch) => {
                     const vidUrl = `${YT_BASE}/playlistItems?part=snippet,contentDetails&maxResults=25&playlistId=${ch.uploadsPlaylistId}&key=${API_KEY}`;
-                    const vidRes = await fetch(vidUrl);
+                    const vidRes = await fetchWithTimeout(vidUrl, 5000);
                     if (!vidRes.ok) throw new Error("QUOTA");
                     const vidData = await vidRes.json();
                     
-                    vidData.items.forEach(item => {
-                        newVideos.push({
-                            videoId: item.snippet.resourceId.videoId,
-                            title: item.snippet.title,
-                            thumbnail: item.snippet.thumbnails.medium?.url || item.snippet.thumbnails.default?.url,
-                            timestamp: new Date(item.snippet.publishedAt).getTime(),
-                            displayDate: formatTimeAgo(item.snippet.publishedAt),
-                            channelId: item.snippet.channelId,
-                            isTmkoc: ch.isTmkoc
+                    if (vidData.items) {
+                        vidData.items.forEach(item => {
+                            newVideos.push({
+                                videoId: item.snippet.resourceId.videoId,
+                                title: item.snippet.title,
+                                thumbnail: item.snippet.thumbnails.medium?.url || item.snippet.thumbnails.default?.url,
+                                timestamp: new Date(item.snippet.publishedAt).getTime(),
+                                displayDate: formatTimeAgo(item.snippet.publishedAt),
+                                channelId: item.snippet.channelId,
+                                isTmkoc: ch.isTmkoc
+                            });
                         });
-                    });
+                    }
                 });
                 await Promise.all(vidPromises);
 
             } catch (err) {
-                console.warn(`YouTube API failed (${err.message}), falling back to Piped...`);
+                console.warn(`YouTube API failed (${err.message}). Bypassing via Piped Nodes...`);
                 sourceUsed = 'piped';
                 newChannels = {};
                 newVideos = [];
@@ -461,12 +593,13 @@
                         
                         if (data.relatedStreams) {
                             data.relatedStreams.slice(0, 25).forEach(v => {
+                                if (!v.url) return;
                                 const vidId = v.url.split('v=')[1] || v.url.split('/watch?v=')[1] || v.url.split('/').pop();
                                 newVideos.push({
                                     videoId: vidId,
                                     title: v.title,
                                     thumbnail: v.thumbnail,
-                                    timestamp: v.uploaded || Date.now(), // Piped gives unix ms
+                                    timestamp: v.uploaded || Date.now(), 
                                     displayDate: v.uploadedDate || "Recently",
                                     channelId: cid,
                                     isTmkoc: tc.isTmkoc
@@ -478,7 +611,7 @@
                     await Promise.all(pipedPromises);
 
                 } catch (pipedErr) {
-                    console.error("Both YouTube API and Piped Proxies failed.", pipedErr);
+                    console.error("Both YouTube API and Piped Proxies failed completely.", pipedErr);
                     sourceUsed = 'failed';
                 }
             }
@@ -508,7 +641,7 @@
                     renderHomeGrid(allVideos, false);
                     showApiStatus("Network Error. Displaying expired local cache as fallback.", "piped");
                 } else {
-                    document.getElementById('home-view').innerHTML = `<div class="error-state">System Offline. Both APIs failed and no cache exists.</div>`;
+                    if(homeView) homeView.innerHTML = `<div class="error-state">System Offline. Both APIs failed and no cache exists.</div>`;
                 }
             }
         }
@@ -516,6 +649,7 @@
         // --- UI rendering ---
         function renderSidebar() {
             const side = document.getElementById('sidebar-channels');
+            if(!side) return;
             side.innerHTML = '';
             Object.values(channelsData).forEach(channel => {
                 const avatar = `<img src="${channel.avatarUrl}" style="width:24px; height:24px; border-radius:50%;">`;
@@ -525,11 +659,12 @@
 
         function renderHomeGrid(items, isSearchResult = false) {
             const homeView = document.getElementById('home-view');
+            if(!homeView) return;
             homeView.innerHTML = '';
             let renderedCount = 0;
             
             let displayItems = items;
-            if (!isSearchResult && curFilterId === null) {
+            if (!isSearchResult && currentFilterId === null) {
                 displayItems = getMixedFeed(items);
             }
 
@@ -541,8 +676,8 @@
                 const channel = channelsData[channelId];
                 if (!channel) return;
 
-                if (curFilterId === null) { if (channel.isTmkoc) return; } 
-                else { if (channelId !== curFilterId) return; }
+                if (currentFilterId === null) { if (channel.isTmkoc) return; } 
+                else { if (channelId !== currentFilterId) return; }
 
                 const title = decodeHTML(item.title);
                 if (title === "Private video" || title === "Deleted video") return;
@@ -578,7 +713,7 @@
             });
             
             Object.keys(grouped).forEach(k => {
-                grouped[k].sort((a, b) => b.timestamp - a.timestamp); // Sort by normalized timestamp
+                grouped[k].sort((a, b) => b.timestamp - a.timestamp); 
             });
 
             const orderedKeys = Object.keys(grouped).sort((a, b) => (a === malviyaId ? -1 : (b === malviyaId ? 1 : 0)));
@@ -602,11 +737,17 @@
 
         // --- Deep API Search Logic (3-Tier) ---
         async function executeSearch() {
-            const q = document.getElementById('search-input').value.trim().toLowerCase();
-            if (!watchMain.classList.contains('hidden')) {
+            const searchInput = document.getElementById('search-input');
+            const q = searchInput ? searchInput.value.trim().toLowerCase() : '';
+            const watchMain = document.getElementById('watch-main');
+            const watchView = document.getElementById('watch-view');
+            const homeMain = document.getElementById('home-main');
+            const homeView = document.getElementById('home-view');
+
+            if (watchMain && !watchMain.classList.contains('hidden')) {
                 watchMain.classList.add('hidden');
-                watchView.style.display = 'none';
-                homeMain.classList.remove('hidden');
+                if(watchView) watchView.style.display = 'none';
+                if(homeMain) homeMain.classList.remove('hidden');
                 stopVideo();
                 stopTmkocTimer();
             }
@@ -623,11 +764,10 @@
                 return;
             }
 
-            document.getElementById('home-view').innerHTML = '<div class="loading-state">Deep searching APIs...</div>';
+            if(homeView) homeView.innerHTML = '<div class="loading-state">Deep searching APIs...</div>';
             
-            let channelsToSearch = curFilterId ? [channelsData[curFilterId]] : Object.values(channelsData).filter(c => !c.isTmkoc);
+            let channelsToSearch = currentFilterId ? [channelsData[currentFilterId]] : Object.values(channelsData).filter(c => !c.isTmkoc);
             let searchResults = [];
-            let sourceUsed = 'youtube';
 
             try {
                 // 2. Try YouTube API Search
@@ -652,7 +792,6 @@
                 searchResults = arrays.flat();
 
             } catch (err) {
-                sourceUsed = 'piped';
                 try {
                     // 3. Try Piped API Search Fallback
                     const data = await fetchPiped(`/search?q=${encodeURIComponent(q)}&filter=videos`);
@@ -683,7 +822,7 @@
                 searchResults.sort((a, b) => b.timestamp - a.timestamp);
                 renderHomeGrid(searchResults, true);
             } else {
-                document.getElementById('home-view').innerHTML = `<div class="error-state">No videos found for "${q}".</div>`;
+                if(homeView) homeView.innerHTML = `<div class="error-state">No videos found for "${q}".</div>`;
             }
         }
 
@@ -698,18 +837,29 @@
                 if (tmkocSessionTime >= 1800) { showAlert("ACCESS DENIED", "30 mins session limit reached. Restart app."); return; }
                 
                 pendingLaunch = { videoId, activeItem, channelInfo };
-                document.getElementById('tm-warn').classList.remove('hidden');
+                const warnModal = document.getElementById('tm-warn');
+                if(warnModal) warnModal.classList.remove('hidden');
                 return;
             }
             executeWatchView(videoId, activeItem, channelInfo);
         }
 
         function executeWatchView(videoId, activeItem, channelInfo) {
-            document.getElementById('home-main').classList.add('hidden');
-            document.getElementById('watch-main').classList.remove('hidden');
-            document.getElementById('w-title').textContent = decodeHTML(activeItem.title);
-            document.getElementById('w-name').textContent = channelInfo.title;
-            document.getElementById('w-avatar').src = channelInfo.avatarUrl;
+            const homeMain = document.getElementById('home-main');
+            const watchMain = document.getElementById('watch-main');
+            const watchView = document.getElementById('watch-view');
+            
+            if(homeMain) homeMain.classList.add('hidden');
+            if(watchMain) watchMain.classList.remove('hidden');
+            
+            const wTitle = document.getElementById('w-title');
+            if(wTitle) wTitle.textContent = decodeHTML(activeItem.title);
+            
+            const wName = document.getElementById('w-name');
+            if(wName) wName.textContent = channelInfo.title;
+            
+            const wAvatar = document.getElementById('w-avatar');
+            if(wAvatar) wAvatar.src = channelInfo.avatarUrl;
 
             if (!player) {
                 player = new YT.Player('yt-player', {
@@ -720,29 +870,38 @@
                             e.target.setPlaybackQuality('highres');
                             e.target.playVideo();
                             updateProgressUI();
-                            if(e.target.isMuted()) { document.getElementById('volume-slider').value = 0; updateMuteIcon(true); }
-                            else { document.getElementById('volume-slider').value = e.target.getVolume(); updateMuteIcon(false); }
+                            const vs = document.getElementById('volume-slider');
+                            if(e.target.isMuted()) { 
+                                if(vs) vs.value = 0; 
+                                updateMuteIcon(true); 
+                            } else { 
+                                if(vs) vs.value = e.target.getVolume(); 
+                                updateMuteIcon(false); 
+                            }
                         },
                         onStateChange: (e) => {
                             const p = document.getElementById('pause-overlay');
                             if(e.data === 1) { 
                                 e.target.setPlaybackQuality('highres');
                                 updatePlayIcon(true);
-                                p.classList.remove('show'); 
+                                if(p) p.classList.remove('show'); 
                                 clearInterval(progressInt);
                                 progressInt = setInterval(updateProgressUI, 500); 
                             } else { 
                                 updatePlayIcon(false);
                                 clearInterval(progressInt);
-                                if(e.data === 2 || e.data === 0) p.classList.add('show');
-                                else p.classList.remove('show');
+                                if (p) {
+                                    if(e.data === 2 || e.data === 0) p.classList.add('show');
+                                    else p.classList.remove('show');
+                                }
                             }
                         }
                     }
                 });
             } else {
                 clearInterval(progressInt);
-                document.getElementById('progress-bar').style.width = '0%';
+                const pb = document.getElementById('progress-bar');
+                if(pb) pb.style.width = '0%';
                 updatePlayIcon(false);
                 player.loadVideoById({ videoId: videoId, suggestedQuality: 'highres' });
             }
@@ -754,7 +913,9 @@
 
         function renderWatchSecondary(currentVideoId, currentChannelId) {
             const wsec = document.getElementById('w-sec');
+            if(!wsec) return;
             wsec.innerHTML = '';
+            
             let pool = allVideos.filter(v => v.videoId !== currentVideoId);
             const isWatchingTmkoc = channelsData[currentChannelId]?.isTmkoc;
             
@@ -776,7 +937,8 @@
 
         // --- TMKOC Timer Logic ---
         function startTimer() {
-            document.getElementById('tmkoc-timer').classList.add('active');
+            const badge = document.getElementById('tmkoc-timer');
+            if(badge) badge.classList.add('active');
             tmkocInterrupt = 0;
             const today = new Date().toISOString().split('T')[0];
             if (localStorage.getItem('1tube_tmkoc_date') !== today) {
@@ -788,7 +950,7 @@
                 let daily = parseInt(localStorage.getItem('1tube_tmkoc_daily_time') || '0') + 1;
                 localStorage.setItem('1tube_tmkoc_daily_time', daily);
                 tmkocSession++; tmkocInterrupt++;
-                document.getElementById('tmkoc-timer').textContent = formatTimer(tmkocSession) + " / 30:00";
+                if(badge) badge.textContent = formatTimer(tmkocSession) + " / 30:00";
                 
                 if (daily >= 3600) { stopVideo(); goHome(); showAlert("LIMIT REACHED", "Daily allowance exhausted."); }
                 else if (tmkocSession >= 1800) { stopVideo(); goHome(); showAlert("LIMIT REACHED", "Session allowance exhausted."); }
@@ -798,7 +960,8 @@
 
         function stopTmkocTimer() {
             clearInterval(tmkocInt);
-            document.getElementById('tmkoc-timer').classList.remove('active');
+            const badge = document.getElementById('tmkoc-timer');
+            if(badge) badge.classList.remove('active');
         }
 
         // --- Helpers & UI Controls ---
@@ -825,70 +988,83 @@
             const current = player.getCurrentTime() || 0;
             const duration = player.getDuration() || 0;
             const pct = duration > 0 ? (current / duration) * 100 : 0;
-            document.getElementById('progress-bar').style.width = `${pct}%`;
-            document.getElementById('time-display').textContent = `${formatTimer(current)} / ${formatTimer(duration)}`;
+            const pb = document.getElementById('progress-bar');
+            if(pb) pb.style.width = `${pct}%`;
+            const td = document.getElementById('time-display');
+            if(td) td.textContent = `${formatTimer(current)} / ${formatTimer(duration)}`;
         }
 
-        function updatePlayIcon(play) { document.getElementById('p-icon').style.display = play ? 'none' : 'block'; document.getElementById('p-icon-pause').style.display = play ? 'block' : 'none'; }
-        function updateMuteIcon(mute) { document.getElementById('m-icon').style.display = mute ? 'none' : 'block'; document.getElementById('m-icon-mute').style.display = mute ? 'block' : 'none'; }
+        function updatePlayIcon(play) { 
+            const pi = document.getElementById('p-icon');
+            const pp = document.getElementById('p-icon-pause');
+            if(pi) pi.style.display = play ? 'none' : 'block'; 
+            if(pp) pp.style.display = play ? 'block' : 'none'; 
+        }
+        function updateMuteIcon(mute) { 
+            const mi = document.getElementById('m-icon');
+            const mm = document.getElementById('m-icon-mute');
+            if(mi) mi.style.display = mute ? 'none' : 'block'; 
+            if(mm) mm.style.display = mute ? 'block' : 'none'; 
+        }
         
         let osdTimeout = null;
         function showOSD(text) {
             const osd = document.getElementById('osd');
+            if(!osd) return;
             osd.textContent = text; osd.classList.add('show');
             clearTimeout(osdTimeout); osdTimeout = setTimeout(() => osd.classList.remove('show'), 800);
         }
 
-        function togglePlayPause() { player.getPlayerState() === 1 ? player.pauseVideo() : player.playVideo(); }
-        function toggleFullscreen() { const pw = document.getElementById('player-wrapper'); !document.fullscreenElement ? pw.requestFullscreen() : document.exitFullscreen(); }
+        function togglePlayPause() { if(!player || typeof player.getPlayerState !== 'function') return; player.getPlayerState() === 1 ? player.pauseVideo() : player.playVideo(); }
+        function toggleFullscreen() { const pw = document.getElementById('player-wrapper'); if(!pw) return; !document.fullscreenElement ? pw.requestFullscreen() : document.exitFullscreen(); }
         function toggleMute() {
-            if(player.isMuted()) { player.unMute(); document.getElementById('volume-slider').value = player.getVolume(); updateMuteIcon(false); showOSD("Unmuted"); } 
-            else { player.mute(); document.getElementById('volume-slider').value = 0; updateMuteIcon(true); showOSD("Muted"); }
+            if(!player || typeof player.isMuted !== 'function') return;
+            const vs = document.getElementById('volume-slider');
+            if(player.isMuted()) { player.unMute(); if(vs) vs.value = player.getVolume(); updateMuteIcon(false); showOSD("Unmuted"); } 
+            else { player.mute(); if(vs) vs.value = 0; updateMuteIcon(true); showOSD("Muted"); }
         }
-        function seekVideo(s) { player.seekTo(player.getCurrentTime() + s, true); showOSD(s > 0 ? `+${s}s` : `${s}s`); updateProgressUI(); }
+        function seekVideo(s) { if(!player || typeof player.getCurrentTime !== 'function') return; player.seekTo(player.getCurrentTime() + s, true); showOSD(s > 0 ? `+${s}s` : `${s}s`); updateProgressUI(); }
         function stopVideo() { if(player && typeof player.stopVideo === 'function') player.stopVideo(); clearInterval(progressInt); updatePlayIcon(false); if (document.fullscreenElement) document.exitFullscreen(); }
         
         function goHome() { 
-            document.getElementById('watch-main').classList.add('hidden');
-            document.getElementById('home-main').classList.remove('hidden');
+            const wm = document.getElementById('watch-main');
+            const hm = document.getElementById('home-main');
+            if(wm) wm.classList.add('hidden');
+            if(hm) hm.classList.remove('hidden');
             stopVideo();
             stopTmkocTimer();
-            if (document.getElementById('search-input').value.trim() === '') renderHomeGrid(allVideos, false);
+            const si = document.getElementById('search-input');
+            if (si && si.value.trim() === '') renderHomeGrid(allVideos, false);
             else executeSearch();
         }
-        function filter(id) { curFilterId = id; document.getElementById('feed-header-title').textContent = channelsData[id].title; goHome(); }
+        function filter(id) { 
+            currentFilterId = id; 
+            const fh = document.getElementById('feed-header-title');
+            if(fh && channelsData[id]) fh.textContent = channelsData[id].title; 
+            goHome(); 
+        }
 
         function toggleSidebar() { if (window.innerWidth <= 768) document.body.classList.toggle('sidebar-open'); else document.body.classList.toggle('sidebar-closed'); }
-        function updateSidebarActive(channelId) { document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active')); if (channelId === null) document.getElementById('nav-home').classList.add('active'); else { const el = document.getElementById(`nav-ch-${channelId}`); if (el) el.classList.add('active'); } }
+        function updateSidebarActive(channelId) { 
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active')); 
+            if (channelId === null) {
+                const nh = document.getElementById('nav-home');
+                if(nh) nh.classList.add('active'); 
+            } else { 
+                const el = document.getElementById(`nav-ch-${channelId}`); 
+                if (el) el.classList.add('active'); 
+            } 
+        }
 
-        function showAlert(t, m) { document.getElementById('alert-t').textContent = t; document.getElementById('alert-msg').innerHTML = m; document.getElementById('system-alert').classList.remove('hidden'); }
-        function closeAlert() { document.getElementById('system-alert').classList.add('hidden'); }
-        function closeTm() { document.getElementById('tm-warn').classList.add('hidden'); }
-        function startTm() { closeTm(); executeWatchView(pendingLaunch.videoId, pendingLaunch.activeItem, pendingLaunch.channelInfo); }
-        function setQ(q) { player.setPlaybackQuality(q); document.getElementById('q-menu').classList.remove('show'); showOSD(`Quality Requested`); }
-
-        // DOM Listeners
-        document.addEventListener('keydown', e => {
-            if (document.activeElement.tagName === 'INPUT') return;
-            if (!player || document.getElementById('watch-main').classList.contains('hidden')) return;
-            if (e.key === ' ') { e.preventDefault(); togglePlayPause(); }
-            if (e.key === 'f') { e.preventDefault(); toggleFullscreen(); }
-            if (e.key === 'm') { e.preventDefault(); toggleMute(); }
-            if (e.key === 'ArrowRight') { e.preventDefault(); seekVideo(10); }
-            if (e.key === 'ArrowLeft') { e.preventDefault(); seekVideo(-10); }
-            if (e.key === 's') { e.preventDefault(); document.getElementById('q-menu').classList.toggle('show'); }
-        });
-
-        document.getElementById('search-btn').onclick = executeSearch;
-        document.getElementById('search-input').onkeyup = e => e.key === 'Enter' && executeSearch();
-        document.getElementById('play-btn').onclick = togglePlayPause;
-        document.getElementById('mute-btn').onclick = toggleMute;
-        document.getElementById('player-shield').onclick = () => { document.getElementById('q-menu').classList.contains('show') ? document.getElementById('q-menu').classList.remove('show') : togglePlayPause(); }
-        document.getElementById('progress-container').onclick = e => { const r = e.currentTarget.getBoundingClientRect(); player.seekTo((e.clientX - r.left) / r.width * player.getDuration(), true); updateProgressUI(); };
-        document.getElementById('volume-slider').oninput = e => { player.setVolume(e.target.value); if(e.target.value > 0 && player.isMuted()) { player.unMute(); updateMuteIcon(false); } else if (e.target.value == 0) { player.mute(); updateMuteIcon(true); } };
-        document.getElementById('sett-btn').onclick = e => { e.stopPropagation(); document.getElementById('q-menu').classList.toggle('show'); };
+        function showAlert(t, m) { 
+            const at = document.getElementById('alert-t');
+            const am = document.getElementById('alert-msg');
+            const sa = document.getElementById('system-alert');
+            if(at) at.textContent = t; 
+            if(am) am.innerHTML = m; 
+            if(sa) sa.classList.remove('hidden'); 
+        }
         
-        function onYouTubeIframeAPIReady() { init(); }
     </script>
 </body>
 </html>
