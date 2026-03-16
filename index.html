@@ -281,8 +281,8 @@
         ];
         
         const TARGET_CHANNELS = [
-            { type: 'id', value: 'UCp8qsMmzox7vFvUJyPuVr5A', isTmkoc: false }, // Malviya
-            { type: 'id', value: 'UCnSFZ-olBoLGLRUS_3RI2Aw', isTmkoc: true },  // TMKOC
+            { id: 'UCp8qsMmzox7vFvUJyPuVr5A', isTmkoc: false }, // Malviya
+            { id: 'UCnSFZ-olBoLGLRUS_3RI2Aw', isTmkoc: true },  // TMKOC
             { type: 'handle', value: '@meditations.acepe', isTmkoc: false }   // Acepe
         ];
         
@@ -851,6 +851,7 @@
             
             if(homeMain) homeMain.classList.add('hidden');
             if(watchMain) watchMain.classList.remove('hidden');
+            if(watchView) watchView.style.display = 'flex';
             
             const wTitle = document.getElementById('w-title');
             if(wTitle) wTitle.textContent = decodeHTML(activeItem.title);
@@ -1029,8 +1030,10 @@
         function goHome() { 
             const wm = document.getElementById('watch-main');
             const hm = document.getElementById('home-main');
+            const wv = document.getElementById('watch-view');
             if(wm) wm.classList.add('hidden');
             if(hm) hm.classList.remove('hidden');
+            if(wv) wv.style.display = 'none';
             stopVideo();
             stopTmkocTimer();
             const si = document.getElementById('search-input');
